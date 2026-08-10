@@ -172,6 +172,15 @@
   #import-text, #import-coll-text { width:100%; min-height:110px; margin-top:10px; padding:8px 10px; border-radius:8px; border:1px solid var(--border);
     background:var(--panel); color:var(--text); font-size:0.85rem; font-family:inherit; resize:vertical; }
   #import-coll-file { width:100%; padding:6px 0; color:var(--text); font-size:0.82rem; }
+  #scan-file { width:100%; padding:6px 0; color:var(--text); font-size:0.82rem; margin-top:8px; }
+  #scan-preview { margin-top:8px; }
+  #scan-preview img { max-width:100%; max-height:220px; border-radius:8px; display:block; }
+  .scan-candidate { display:flex; align-items:center; gap:12px; padding:9px 0; border-bottom:1px solid var(--border); cursor:pointer; }
+  .scan-candidate:hover { background:var(--chip); }
+  .scan-candidate img { width:40px; border-radius:5px; }
+  .scan-candidate .sc-name { font-weight:600; font-size:0.85rem; }
+  .scan-candidate .sc-meta { font-size:0.7rem; color:var(--muted); }
+  .scan-status { text-align:center; padding:16px; color:var(--muted); font-size:0.85rem; }
   .import-summary { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:14px; }
   .import-summary .stat { flex:1; min-width:100px; background:var(--chip); border-radius:10px; padding:10px 12px; text-align:center; }
   .import-summary .stat .n { font-size:1.4rem; font-weight:800; }
@@ -291,6 +300,54 @@
   @media (min-width: 1000px) { .life-grid { grid-template-columns: repeat(4, 1fr); } }
   @media (max-width: 640px) { .life-grid { grid-template-columns: repeat(2, 1fr); padding:8px; } .life-player .lp-life { font-size:2.4rem; } }
 
+  /* ---------------- Collection page (full screen, not a modal) ---------------- */
+  .collection-screen { display:none; position:fixed; inset:0; z-index:200; background:var(--bg); flex-direction:column; }
+  .collection-screen.open { display:flex; }
+  .coll-toolbar { display:flex; gap:8px; padding:10px 14px; border-bottom:1px solid var(--border); align-items:center; flex-wrap:wrap; }
+  .coll-toolbar button { padding:9px 14px; border-radius:8px; border:1px solid var(--border); background:var(--panel); color:var(--text);
+    font-size:0.82rem; font-weight:600; cursor:pointer; }
+  .coll-toolbar button.active { background:var(--accent); border-color:var(--accent); color:white; }
+  .coll-toolbar button:hover:not(.active) { border-color:var(--accent); color:var(--accent); }
+  #collection-page-close { margin-left:auto; }
+  .coll-body { flex:1; display:flex; overflow:hidden; }
+  .coll-sidebar { width:260px; flex-shrink:0; padding:14px; border-right:1px solid var(--border); overflow-y:auto; }
+  .coll-main { flex:1; padding:14px 18px; overflow-y:auto; }
+  .coll-view { display:none; flex:1; overflow:hidden; }
+  .coll-view.active { display:flex; }
+
+  .coll2-row { display:flex; align-items:center; gap:12px; padding:10px 0; border-bottom:1px solid var(--border); }
+  .coll2-row img { width:46px; border-radius:6px; flex-shrink:0; cursor:pointer; }
+  .coll2-row .c2-info { flex:1; min-width:0; }
+  .coll2-row .c2-name { font-size:0.86rem; font-weight:600; cursor:pointer; }
+  .coll2-row .c2-meta { font-size:0.7rem; color:var(--muted); margin-top:1px; }
+  .coll2-row .c2-decks { display:flex; flex-wrap:wrap; gap:4px; margin-top:5px; align-items:center; }
+  .coll2-row .c2-deck-tag { display:flex; align-items:center; gap:4px; background:var(--chip); border-radius:999px; padding:2px 4px 2px 10px; font-size:0.68rem; }
+  .coll2-row .c2-deck-tag button { border:none; background:none; color:#dc2626; cursor:pointer; font-size:0.7rem; padding:2px 6px; }
+  .coll2-row .c2-add-deck { font-size:0.68rem; padding:2px 8px; border-radius:999px; border:1px dashed var(--border); background:none; color:var(--muted); cursor:pointer; }
+  .coll2-row .c2-add-deck:hover { border-color:var(--accent); color:var(--accent); }
+  .coll2-row .c2-owned { flex-shrink:0; display:flex; flex-direction:column; align-items:center; gap:4px; }
+  .coll2-row .c2-owned .stepper { display:flex; align-items:center; gap:6px; }
+  .coll2-row .c2-owned .stepper button { width:24px; height:24px; border-radius:6px; border:1px solid var(--border); background:var(--chip); color:var(--text); cursor:pointer; }
+  .coll2-row .c2-owned .lbl { font-size:0.62rem; color:var(--muted); text-transform:uppercase; }
+
+  .coll-decks-list { display:flex; flex-direction:column; gap:8px; width:280px; flex-shrink:0; padding:14px; border-right:1px solid var(--border); overflow-y:auto; }
+  .coll-deck-card { padding:10px 12px; border-radius:10px; border:1px solid var(--border); background:var(--panel); cursor:pointer; }
+  .coll-deck-card.active { border-color:var(--accent); background:var(--accent-bg); }
+  .coll-deck-card .dc-name { font-weight:700; font-size:0.85rem; }
+  .coll-deck-card .dc-meta { font-size:0.7rem; color:var(--muted); margin-top:2px; }
+  .coll-new-deck-form { display:flex; gap:6px; padding:0 0 10px; flex-wrap:wrap; }
+  .coll-new-deck-form input, .coll-new-deck-form select { flex:1; min-width:100px; padding:7px 8px; border-radius:8px; border:1px solid var(--border); background:var(--panel); color:var(--text); font-size:0.8rem; }
+  .coll-new-deck-form button { padding:7px 12px; border-radius:8px; border:1px solid var(--accent); background:var(--accent); color:white; font-weight:600; cursor:pointer; font-size:0.8rem; }
+  .coll-deck-detail { flex:1; padding:14px 18px; overflow-y:auto; }
+  .coll-deck-detail .dd-header { display:flex; align-items:center; gap:10px; margin-bottom:14px; flex-wrap:wrap; }
+  .coll-deck-detail .dd-header h2 { margin:0; font-size:1.1rem; }
+  .coll-deck-detail .dd-actions { display:flex; gap:8px; margin-left:auto; flex-wrap:wrap; }
+  .coll-deck-detail .dd-actions button { padding:7px 12px; border-radius:8px; border:1px solid var(--border); background:var(--chip); color:var(--text); cursor:pointer; font-size:0.78rem; }
+  .dd-card-row { display:flex; align-items:center; gap:10px; padding:6px 0; border-bottom:1px solid var(--border); font-size:0.82rem; }
+  .dd-card-row img { width:32px; border-radius:4px; }
+  .dd-card-row .dd-name { flex:1; }
+  .dd-card-row .rm { border:none; background:none; color:#dc2626; cursor:pointer; }
+
   /* ---------------- Mobile ---------------- */
   .filters-toggle { display:none; }
   .filters-overlay { display:none; }
@@ -328,6 +385,7 @@
   <button class="header-tool-btn" id="import-open-btn">📋 Importer une decklist</button>
   <button class="header-tool-btn" id="collection-open-btn">📚 Ma Collection</button>
   <button class="header-tool-btn" id="import-coll-open-btn">📥 Importer ma collection</button>
+  <button class="header-tool-btn" id="scan-open-btn">📷 Scanner une carte</button>
 </header>
 <div class="filters-overlay" id="filters-overlay"></div>
 <div class="layout">
@@ -413,6 +471,20 @@
   </div>
 </div>
 
+<div class="overlay" id="scan-overlay">
+  <div class="lex-modal">
+    <div class="lex-head">
+      <button class="close-x" id="scan-close" style="position:static; float:right;">✕</button>
+      <h2>📷 Scanner une carte</h2>
+      <div class="lex-sub">Prends une photo (ou choisis une image) du <b>nom</b> de la carte, bien cadré et lisible. La reconnaissance de texte tourne dans ton navigateur — la bibliothèque se charge depuis un CDN la première fois (nécessite internet une seule fois, puis reste en cache). Précision variable selon l'angle/la lumière/la police de la carte.</div>
+      <input type="file" id="scan-file" accept="image/*" capture="environment">
+      <div id="scan-preview"></div>
+      <button class="lexicon-btn" id="scan-go" style="margin-top:10px;" disabled>Analyser la photo</button>
+    </div>
+    <div class="lex-list" id="scan-results"></div>
+  </div>
+</div>
+
 <div class="overlay" id="import-coll-overlay">
   <div class="lex-modal">
     <div class="lex-head">
@@ -427,16 +499,46 @@
   </div>
 </div>
 
-<div class="overlay" id="collection-overlay">
-  <div class="lex-modal">
-    <div class="lex-head">
-      <button class="close-x" id="collection-close" style="position:static; float:right;">✕</button>
-      <h2>📚 Ma Collection</h2>
-      <div class="lex-sub" id="collection-sub"></div>
-      <input type="text" id="collection-q" placeholder="Filtrer par nom...">
-      <div class="lex-cats" id="collection-filters"></div>
+<div class="collection-screen" id="collection-screen">
+  <div class="coll-toolbar">
+    <button id="coll-tab-cards-btn" class="active">📚 Cartes</button>
+    <button id="coll-tab-decks-btn">🗂️ Mes Decks</button>
+    <button id="coll-scan-btn2">📷 Scanner une carte</button>
+    <button id="collection-page-close">✕ Fermer</button>
+  </div>
+  <div class="coll-body">
+    <div class="coll-view active" id="coll-view-cards">
+      <div class="coll-sidebar">
+        <input type="text" id="coll2-q" placeholder="Rechercher...">
+        <div class="checklist-hint">Clic = inclure (✓) · re-clic = exclure (✕)</div>
+        <div class="field"><label class="title">Set</label><div class="checklist tall" id="coll2-f-set"></div></div>
+        <div class="field"><label class="title">Type</label><div class="checklist" id="coll2-f-type"></div></div>
+        <div class="field"><label class="title">Couleur</label><div class="checklist" id="coll2-f-color"></div></div>
+        <div class="field"><label class="title">Rareté</label><div class="checklist" id="coll2-f-rarity"></div></div>
+        <div class="field"><label class="title">Statut</label><div class="chipbox" id="coll2-f-status"></div></div>
+        <button class="reset" id="coll2-reset">Réinitialiser les filtres</button>
+      </div>
+      <div class="coll-main">
+        <div class="count" id="coll2-count"></div>
+        <div id="coll2-list"></div>
+        <button class="loadmore" id="coll2-loadmore">Charger plus de cartes</button>
+      </div>
     </div>
-    <div class="lex-list" id="collection-list"></div>
+    <div class="coll-view" id="coll-view-decks">
+      <div class="coll-decks-list">
+        <div class="coll-new-deck-form">
+          <input type="text" id="new-deck-name" placeholder="Nom du deck">
+          <select id="new-deck-format">
+            <option>Commander</option><option>Standard</option><option>Modern</option>
+            <option>Pioneer</option><option>Pauper</option><option>Legacy</option>
+            <option>Vintage</option><option>Autre</option>
+          </select>
+          <button id="new-deck-create">+ Créer</button>
+        </div>
+        <div id="coll-decks-items"></div>
+      </div>
+      <div class="coll-deck-detail" id="coll-deck-detail"><div class="lex-empty">Sélectionne ou crée un deck.</div></div>
+    </div>
   </div>
 </div>
 
@@ -511,14 +613,15 @@
 <div class="drawer-overlay" id="drawer-overlay"></div>
 <div class="drawer" id="drawer">
   <header>
-    <h2>Panier / Decks</h2>
+    <h2>🛒 Mes paniers</h2>
     <button class="close-x" id="drawer-close" style="position:static; float:none; margin:0;">✕</button>
   </header>
+  <div class="lex-sub" style="padding:0 14px; margin-top:4px;">Listes d'achat — pas tes decks. Pour construire un deck, va dans "📚 Ma Collection".</div>
   <div class="deck-switcher">
     <select id="deck-select"></select>
-    <button id="deck-new" title="Nouveau deck">+</button>
+    <button id="deck-new" title="Nouveau panier">+</button>
     <button id="deck-rename" title="Renommer">✎</button>
-    <button id="deck-delete" title="Supprimer ce deck">🗑</button>
+    <button id="deck-delete" title="Supprimer ce panier">🗑</button>
   </div>
   <div class="items" id="drawer-items"></div>
   <footer>
@@ -527,8 +630,6 @@
       <button id="drawer-export">Télécharger .txt</button>
     </div>
     <button class="secondary" id="drawer-export-prices">💲 Exporter avec prix (CSV, via Scryfall)</button>
-    <button class="secondary" id="drawer-stats-btn">📊 Statistiques du deck</button>
-    <button class="secondary" id="drawer-hand-btn">🃏 Tester une main de pioche</button>
   </footer>
 </div>
 
@@ -739,7 +840,7 @@ if (!decksStore) {
   let legacyCart = {};
   try { legacyCart = JSON.parse(localStorage.getItem(CART_KEY) || '{}'); } catch (e) { legacyCart = {}; }
   const firstId = uid();
-  decksStore = { decks: { [firstId]: { name: 'Deck principal', cards: legacyCart } }, activeId: firstId };
+  decksStore = { decks: { [firstId]: { name: 'Panier principal', cards: legacyCart } }, activeId: firstId };
   localStorage.setItem(DECKS_KEY, JSON.stringify(decksStore));
   localStorage.removeItem(CART_KEY);
 }
@@ -1340,6 +1441,22 @@ function openLightbox(id) {
   const fr = c.name_fr ? `<div class="fr">${escapeHtml(c.name_fr)}</div>` : '';
   const inCart = (cart[id]||0) > 0;
   const ownedLine = c.owned > 0 ? `<div class="line owned-line">✓ Déjà dans votre collection${c.owned>1?' (x'+c.owned+')':''}</div>` : '';
+  const { usedIn: lbUsedIn } = deckUsage(id);
+  const lbDeckTags = lbUsedIn.map(u => `<span class="c2-deck-tag">${escapeHtml(u.name)} ×${u.qty}<button data-lbrmdeck="${u.id}">✕</button></span>`).join('');
+  const lbDeckOptions = Object.entries(myDeckStore.decks).map(([did, d]) => `<option value="${did}">+ ${escapeHtml(d.name)}</option>`).join('');
+  const lbAddDeckPicker = lbDeckOptions ? `<select id="lb-add-deck-select"><option value="">+ ajouter à un deck</option>${lbDeckOptions}</select>` : '<span style="opacity:.6; font-size:0.75rem;">Crée un deck dans "Ma Collection" pour pouvoir l\'y ajouter.</span>';
+  const collectionSection = `<div class="edhrec-section">
+    <div class="synergy-title" style="margin-top:0;">Ma collection</div>
+    <div class="line" style="display:flex; align-items:center; gap:10px;">
+      Possédée :
+      <span class="stepper" style="display:inline-flex; align-items:center; gap:6px;">
+        <button id="lb-owned-dec" style="width:22px;height:22px;border-radius:6px;border:1px solid var(--border);background:var(--chip);color:var(--text);cursor:pointer;">−</button>
+        <b id="lb-owned-qty">${c.owned}</b>
+        <button id="lb-owned-inc" style="width:22px;height:22px;border-radius:6px;border:1px solid var(--border);background:var(--chip);color:var(--text);cursor:pointer;">+</button>
+      </span>
+    </div>
+    <div class="c2-decks" style="margin-top:8px;">${lbDeckTags}${lbAddDeckPicker}</div>
+  </div>`;
   const synergyChips = c.tags.length
     ? `<div class="synergy-title">Voir les cartes avec les mêmes synergies</div>
        <div class="synergy-chips">${c.tags.map(t => `<button data-tag="${escapeHtml(t)}">${escapeHtml(t)}</button>`).join('')}</div>`
@@ -1379,6 +1496,7 @@ function openLightbox(id) {
         <button id="lb-add">${inCart ? '✓ Dans le panier ('+cart[id]+')' : '+ Ajouter au panier'}</button>
         <a href="${c.scryfall_uri}" target="_blank" rel="noopener">Voir sur Scryfall ↗</a>
       </div>
+      ${collectionSection}
       ${synergyChips}
       ${edhrecSection}
     </div>
@@ -1386,6 +1504,19 @@ function openLightbox(id) {
   document.getElementById('overlay').classList.add('open');
   document.getElementById('lb-close').onclick = closeLightbox;
   document.getElementById('lb-add').onclick = () => { addToCart(id); openLightbox(id); };
+  document.getElementById('lb-owned-inc').onclick = () => { adjustOwned(c, 1); openLightbox(id); };
+  document.getElementById('lb-owned-dec').onclick = () => { adjustOwned(c, -1); openLightbox(id); };
+  document.querySelectorAll('[data-lbrmdeck]').forEach(btn => {
+    btn.onclick = () => { removeCardFromMyDeck(btn.dataset.lbrmdeck, id, 1); openLightbox(id); };
+  });
+  const lbAddDeckSelect = document.getElementById('lb-add-deck-select');
+  if (lbAddDeckSelect) {
+    lbAddDeckSelect.onchange = () => {
+      if (!lbAddDeckSelect.value) return;
+      addCardToMyDeck(lbAddDeckSelect.value, id, 1);
+      openLightbox(id);
+    };
+  }
   document.querySelectorAll('.lang-toggle button').forEach(btn => {
     btn.onclick = () => { textLang = btn.dataset.lang; localStorage.setItem('mtg_text_lang', textLang); openLightbox(id); };
   });
@@ -1420,8 +1551,9 @@ document.addEventListener('keydown', (e) => {
     document.getElementById('life-screen').classList.remove('open');
     document.getElementById('import-overlay').classList.remove('open');
     document.getElementById('stats-overlay').classList.remove('open');
-    document.getElementById('collection-overlay').classList.remove('open');
+    document.getElementById('collection-screen').classList.remove('open');
     document.getElementById('hand-overlay').classList.remove('open');
+    document.getElementById('scan-overlay').classList.remove('open');
   }
 });
 
@@ -1492,14 +1624,17 @@ document.getElementById('reset').onclick = () => {
 // ---------------- Tester une main de pioche ----------------
 let handSize = 7;
 
-function drawHand() {
-  const ids = Object.keys(cart);
+let lastHandSource = null; // { cards, name } -- so redraw/mulligan buttons know what to re-draw from
+
+function drawHandFrom(cardsMap, deckName) {
+  lastHandSource = { cards: cardsMap, name: deckName };
+  const ids = Object.keys(cardsMap);
   const library = [];
-  for (const id of ids) { for (let i = 0; i < cart[id]; i++) library.push(id); }
+  for (const id of ids) { for (let i = 0; i < cardsMap[id]; i++) library.push(id); }
   const sub = document.getElementById('hand-sub');
   const grid = document.getElementById('hand-grid');
   if (!library.length) {
-    sub.textContent = `Deck "${decksStore.decks[decksStore.activeId].name}" — vide, rien à piocher.`;
+    sub.textContent = `Deck "${deckName}" — vide, rien à piocher.`;
     grid.innerHTML = '';
     return;
   }
@@ -1510,7 +1645,7 @@ function drawHand() {
   }
   const n = Math.min(handSize, library.length);
   const hand = library.slice(0, n);
-  sub.textContent = `Deck "${decksStore.decks[decksStore.activeId].name}" (${library.length} carte(s) au total)`
+  sub.textContent = `Deck "${deckName}" (${library.length} carte(s) au total)`
     + (library.length < handSize ? ` — moins de ${handSize} cartes dans ce deck, main réduite à ${n}.` : '') + '.';
   grid.innerHTML = hand.map(id => {
     const c = CARDS_BY_ID[id];
@@ -1521,25 +1656,141 @@ function drawHand() {
   }).join('');
 }
 
-document.getElementById('drawer-hand-btn').onclick = () => {
-  document.getElementById('hand-overlay').classList.add('open');
-  drawHand();
-};
+function redrawHand() { if (lastHandSource) drawHandFrom(lastHandSource.cards, lastHandSource.name); }
+
 document.getElementById('hand-close').onclick = () => document.getElementById('hand-overlay').classList.remove('open');
 document.getElementById('hand-overlay').addEventListener('click', (e) => { if (e.target.id === 'hand-overlay') e.currentTarget.classList.remove('open'); });
 document.getElementById('hand-draw7').onclick = () => {
   handSize = 7;
   document.getElementById('hand-draw7').classList.add('active');
   document.getElementById('hand-draw6').classList.remove('active');
-  drawHand();
+  redrawHand();
 };
 document.getElementById('hand-draw6').onclick = () => {
   handSize = 6;
   document.getElementById('hand-draw6').classList.add('active');
   document.getElementById('hand-draw7').classList.remove('active');
-  drawHand();
+  redrawHand();
 };
-document.getElementById('hand-redraw').onclick = drawHand;
+document.getElementById('hand-redraw').onclick = redrawHand;
+
+// ---------------- Scanner une carte (OCR du nom, via camera/photo) ----------------
+let tesseractLoadPromise = null;
+function loadTesseract() {
+  if (window.Tesseract) return Promise.resolve();
+  if (tesseractLoadPromise) return tesseractLoadPromise;
+  tesseractLoadPromise = new Promise((resolve, reject) => {
+    const script = document.createElement('script');
+    script.src = 'https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js';
+    script.onload = resolve;
+    script.onerror = () => reject(new Error('Impossible de charger la bibliothèque OCR (pas de connexion internet ?)'));
+    document.head.appendChild(script);
+  });
+  return tesseractLoadPromise;
+}
+
+// Crops the top ~22% of the image (where the card name sits) to reduce OCR noise
+// from rules text further down the card.
+function cropTopPortion(img) {
+  const canvas = document.createElement('canvas');
+  const cropH = Math.round(img.naturalHeight * 0.22);
+  canvas.width = img.naturalWidth;
+  canvas.height = cropH;
+  const ctx = canvas.getContext('2d');
+  ctx.drawImage(img, 0, 0, img.naturalWidth, cropH, 0, 0, img.naturalWidth, cropH);
+  return canvas.toDataURL('image/png');
+}
+
+// OCR commonly confuses these characters with letters (0/O, 1/l/I, 5/S, 8/B...).
+// Only applied to the scanned text, never to real catalog card names.
+function deOCRify(s) {
+  return s.replace(/0/g, 'o').replace(/1/g, 'l').replace(/5/g, 's').replace(/8/g, 'b').replace(/\|/g, 'l');
+}
+
+function wordsClose(a, b) {
+  if (a === b) return true;
+  if (Math.abs(a.length - b.length) > 2) return false;
+  return a.slice(0, Math.min(4, a.length, b.length)) === b.slice(0, Math.min(4, a.length, b.length));
+}
+
+function fuzzyMatchCardName(ocrText) {
+  const norm = (s) => (s || '').toLowerCase().replace(/[^a-z0-9 ]/g, ' ').replace(/\s+/g, ' ').trim();
+  const ocrNorm = deOCRify(norm(ocrText));
+  const ocrWords = new Set(ocrNorm.split(' ').filter((w) => w.length > 2));
+  if (!ocrWords.size) return [];
+  const scored = [];
+  const seen = new Set();
+  for (const c of CARDS) {
+    if (seen.has(c.name_en)) continue;
+    const nameNorm = norm(c.name_en);
+    if (!nameNorm) continue;
+    let score = 0;
+    if (ocrNorm.includes(nameNorm) || nameNorm.includes(ocrNorm)) score += 5;
+    const nameWords = nameNorm.split(' ').filter((w) => w.length > 2);
+    for (const w of nameWords) {
+      if (ocrWords.has(w)) { score += 1; continue; }
+      for (const ow of ocrWords) if (wordsClose(w, ow)) { score += 0.5; break; }
+    }
+    if (score > 0) { scored.push({ card: c, score }); seen.add(c.name_en); }
+  }
+  scored.sort((a, b) => b.score - a.score);
+  return scored.slice(0, 8);
+}
+
+document.getElementById('scan-file').addEventListener('change', (e) => {
+  const file = e.target.files[0];
+  const preview = document.getElementById('scan-preview');
+  const goBtn = document.getElementById('scan-go');
+  document.getElementById('scan-results').innerHTML = '';
+  if (!file) { preview.innerHTML = ''; goBtn.disabled = true; return; }
+  const url = URL.createObjectURL(file);
+  preview.innerHTML = `<img id="scan-img" src="${url}" alt="">`;
+  goBtn.disabled = false;
+});
+
+document.getElementById('scan-go').onclick = async () => {
+  const results = document.getElementById('scan-results');
+  const goBtn = document.getElementById('scan-go');
+  const img = document.getElementById('scan-img');
+  if (!img) return;
+  goBtn.disabled = true;
+  results.innerHTML = '<div class="scan-status">Chargement du moteur OCR...</div>';
+  try {
+    await loadTesseract();
+    await new Promise((resolve) => { if (img.complete) resolve(); else img.onload = resolve; });
+    results.innerHTML = '<div class="scan-status">Lecture du texte...</div>';
+    const cropped = cropTopPortion(img);
+    const { data } = await Tesseract.recognize(cropped, 'eng');
+    const candidates = fuzzyMatchCardName(data.text);
+    if (!candidates.length) {
+      results.innerHTML = `<div class="lex-empty">Aucune correspondance trouvée.<br>Texte lu : "${escapeHtml((data.text || '').trim().slice(0, 80))}"<br>Essaie une photo plus nette, bien cadrée sur le nom.</div>`;
+    } else {
+      results.innerHTML = `<div class="lex-sub" style="margin-bottom:8px;">Texte lu : "${escapeHtml((data.text || '').trim().slice(0, 60))}" — meilleures correspondances :</div>`
+        + candidates.map((x) => `<div class="scan-candidate" data-id="${x.card.id}">
+            <img src="${x.card.image}" alt="">
+            <div><div class="sc-name">${escapeHtml(x.card.name_en)}</div><div class="sc-meta">${escapeHtml(x.card.set_name)} (${x.card.set_code})</div></div>
+          </div>`).join('');
+      results.querySelectorAll('.scan-candidate').forEach((row) => {
+        row.onclick = () => {
+          document.getElementById('scan-overlay').classList.remove('open');
+          openLightbox(row.dataset.id);
+        };
+      });
+    }
+  } catch (err) {
+    results.innerHTML = `<div class="lex-empty">Erreur : ${escapeHtml(err.message || String(err))}</div>`;
+  } finally {
+    goBtn.disabled = false;
+  }
+};
+
+function openScanModal() {
+  document.getElementById('scan-overlay').classList.add('open');
+}
+document.getElementById('scan-open-btn').onclick = openScanModal;
+document.getElementById('coll-scan-btn2').onclick = openScanModal;
+document.getElementById('scan-close').onclick = () => document.getElementById('scan-overlay').classList.remove('open');
+document.getElementById('scan-overlay').addEventListener('click', (e) => { if (e.target.id === 'scan-overlay') e.currentTarget.classList.remove('open'); });
 
 // ---------------- Importer ma collection (client-side, jamais envoyée nulle part) ----------------
 const CLIENT_COLLECTION_KEY = 'mtg_client_collection_v1';
@@ -1623,81 +1874,273 @@ try {
   if (savedColl) applyClientCollection(savedColl);
 } catch (e) { /* ignore corrupt storage */ }
 
-// ---------------- Ma Collection (allocation par deck) ----------------
-let collectionFilter = '';
+// ---------------- Mes Decks (vrais decks, séparés du panier) ----------------
+const MYDECK_KEY = 'mtg_mydecks_v1';
+let myDeckStore = null;
+try { myDeckStore = JSON.parse(localStorage.getItem(MYDECK_KEY)); } catch (e) { myDeckStore = null; }
+if (!myDeckStore || !myDeckStore.decks) myDeckStore = { decks: {}, activeId: null };
 
-function buildCollectionData() {
-  const ownedCards = CARDS.filter(c => c.owned > 0);
-  return ownedCards.map(card => {
-    const usedIn = [];
-    let totalUsed = 0;
-    for (const deck of Object.values(decksStore.decks)) {
-      const qty = deck.cards[card.id];
-      if (qty) { usedIn.push({ name: deck.name, qty }); totalUsed += qty; }
-    }
-    return { card, usedIn, totalUsed, free: card.owned - totalUsed };
-  });
+function persistMyDecks() { localStorage.setItem(MYDECK_KEY, JSON.stringify(myDeckStore)); }
+
+function deckUsage(cardId) {
+  const usedIn = [];
+  let total = 0;
+  for (const [id, deck] of Object.entries(myDeckStore.decks)) {
+    const qty = deck.cards[cardId];
+    if (qty) { usedIn.push({ id, name: deck.name, qty }); total += qty; }
+  }
+  return { usedIn, total };
 }
 
-function renderCollection() {
-  const q = document.getElementById('collection-q').value.trim().toLowerCase();
-  const data = buildCollectionData();
-  let items = data;
-  if (collectionFilter === 'unused') items = items.filter(x => x.totalUsed === 0);
-  else if (collectionFilter === 'used') items = items.filter(x => x.totalUsed > 0);
-  else if (collectionFilter === 'over') items = items.filter(x => x.free < 0);
-  if (q) items = items.filter(x => x.card.name_en.toLowerCase().includes(q) || (x.card.name_fr||'').toLowerCase().includes(q));
+function addCardToMyDeck(deckId, cardId, qty) {
+  const deck = myDeckStore.decks[deckId];
+  if (!deck) return;
+  deck.cards[cardId] = (deck.cards[cardId] || 0) + (qty || 1);
+  persistMyDecks();
+}
+function removeCardFromMyDeck(deckId, cardId, qty) {
+  const deck = myDeckStore.decks[deckId];
+  if (!deck) return;
+  const next = Math.max(0, (deck.cards[cardId] || 0) - (qty || 1));
+  if (next > 0) deck.cards[cardId] = next; else delete deck.cards[cardId];
+  persistMyDecks();
+}
 
-  document.getElementById('collection-sub').textContent =
-    `${data.length} carte(s) possédée(s) au total, réparties sur ${Object.keys(decksStore.decks).length} deck(s) enregistré(s).`;
+function adjustOwned(card, delta) {
+  let map = {};
+  try { map = JSON.parse(localStorage.getItem(CLIENT_COLLECTION_KEY) || '{}'); } catch (e) { map = {}; }
+  const key = card.name_en.toLowerCase();
+  const newQty = Math.max(0, (map[key] || 0) + delta);
+  if (newQty > 0) map[key] = newQty; else delete map[key];
+  localStorage.setItem(CLIENT_COLLECTION_KEY, JSON.stringify(map));
+  for (const c of CARDS) if (c.name_en.toLowerCase() === key) c.owned = newQty;
+  refreshSubheader();
+}
 
-  const box = document.getElementById('collection-list');
-  if (!items.length) { box.innerHTML = '<div class="lex-empty">Aucune carte trouvée.</div>'; return; }
-  box.innerHTML = items.map(x => {
-    const freeClass = x.free < 0 ? 'over' : (x.free === 0 ? 'zero' : 'avail');
-    const decksHtml = x.usedIn.length
-      ? x.usedIn.map(d => `<span class="deck-tag">${escapeHtml(d.name)} ×${d.qty}</span>`).join('')
-      : '<span style="opacity:.6;">Pas encore dans un deck</span>';
-    return `<div class="coll-row" data-id="${x.card.id}">
-      <img loading="lazy" src="${x.card.image}" alt="">
-      <div class="cr-info">
-        <div class="cr-name">${escapeHtml(x.card.name_en)}</div>
-        <div class="cr-decks">${decksHtml}</div>
-      </div>
-      <div class="cr-qty">Possédée ×${x.card.owned}<br><span class="free ${freeClass}">${x.free < 0 ? 'sur-allouée (' + x.free + ')' : 'libre : ' + x.free}</span></div>
+function renderDecksTabList() {
+  const box = document.getElementById('coll-decks-items');
+  const ids = Object.keys(myDeckStore.decks);
+  if (!ids.length) { box.innerHTML = '<div class="lex-empty">Aucun deck. Crée-en un ci-dessus.</div>'; return; }
+  box.innerHTML = ids.map(id => {
+    const d = myDeckStore.decks[id];
+    const count = Object.values(d.cards).reduce((a, b) => a + b, 0);
+    return `<div class="coll-deck-card ${id === myDeckStore.activeId ? 'active' : ''}" data-id="${id}">
+      <div class="dc-name">${escapeHtml(d.name)}</div>
+      <div class="dc-meta">${escapeHtml(d.format)} · ${count} carte(s)</div>
     </div>`;
   }).join('');
 }
 
-document.getElementById('collection-list').addEventListener('click', (e) => {
-  const row = e.target.closest('.coll-row');
+document.getElementById('new-deck-create').onclick = () => {
+  const name = document.getElementById('new-deck-name').value.trim();
+  if (!name) { alert('Donne un nom à ton deck.'); return; }
+  const format = document.getElementById('new-deck-format').value;
+  const id = uid();
+  myDeckStore.decks[id] = { name, format, cards: {} };
+  myDeckStore.activeId = id;
+  persistMyDecks();
+  document.getElementById('new-deck-name').value = '';
+  renderDecksTabList();
+  renderDeckDetailView();
+};
+
+document.getElementById('coll-decks-items').addEventListener('click', (e) => {
+  const row = e.target.closest('.coll-deck-card');
   if (!row) return;
-  document.getElementById('collection-overlay').classList.remove('open');
-  openLightbox(row.dataset.id);
+  myDeckStore.activeId = row.dataset.id;
+  persistMyDecks();
+  renderDecksTabList();
+  renderDeckDetailView();
 });
 
-(function initCollectionFilters() {
-  const box = document.getElementById('collection-filters');
-  const opts = [['', 'Toutes'], ['unused', 'Non allouées'], ['used', 'Utilisées'], ['over', 'Sur-allouées']];
+function renderDeckDetailView() {
+  const box = document.getElementById('coll-deck-detail');
+  const deck = myDeckStore.decks[myDeckStore.activeId];
+  if (!deck) { box.innerHTML = '<div class="lex-empty">Sélectionne ou crée un deck.</div>'; return; }
+  const ids = Object.keys(deck.cards);
+  const rows = ids.map(id => {
+    const c = CARDS_BY_ID[id];
+    if (!c) return '';
+    return `<div class="dd-card-row">
+      <img src="${c.image}" alt="">
+      <div class="dd-name">${escapeHtml(c.name_en)}</div>
+      <div>×${deck.cards[id]}</div>
+      <button class="rm" data-id="${id}">suppr.</button>
+    </div>`;
+  }).join('');
+  box.innerHTML = `
+    <div class="dd-header">
+      <h2>${escapeHtml(deck.name)}</h2>
+      <span class="rarity common">${escapeHtml(deck.format)}</span>
+      <div class="dd-actions">
+        <button id="dd-stats-btn">📊 Statistiques</button>
+        <button id="dd-hand-btn">🃏 Test pioche</button>
+        <button id="dd-rename-btn">✎ Renommer</button>
+        <button id="dd-delete-btn">🗑 Supprimer</button>
+      </div>
+    </div>
+    <div class="lex-sub">${ids.length} carte(s) unique(s) — ajoute des cartes depuis l'onglet "Cartes" (menu déroulant sous chaque carte) ou depuis le zoom d'une carte dans le catalogue.</div>
+    ${ids.length ? rows : '<div class="lex-empty">Ce deck est vide pour l\'instant.</div>'}
+  `;
+  document.getElementById('dd-stats-btn').onclick = () => {
+    document.getElementById('stats-overlay').classList.add('open');
+    renderDeckStatsFor(deck.cards, deck.name);
+  };
+  document.getElementById('dd-hand-btn').onclick = () => {
+    document.getElementById('hand-overlay').classList.add('open');
+    drawHandFrom(deck.cards, deck.name);
+  };
+  document.getElementById('dd-rename-btn').onclick = () => {
+    const name = prompt('Nouveau nom :', deck.name);
+    if (!name) return;
+    deck.name = name;
+    persistMyDecks();
+    renderDecksTabList();
+    renderDeckDetailView();
+  };
+  document.getElementById('dd-delete-btn').onclick = () => {
+    if (!confirm(`Supprimer le deck "${deck.name}" ?`)) return;
+    delete myDeckStore.decks[myDeckStore.activeId];
+    myDeckStore.activeId = Object.keys(myDeckStore.decks)[0] || null;
+    persistMyDecks();
+    renderDecksTabList();
+    renderDeckDetailView();
+  };
+  box.querySelectorAll('.dd-card-row .rm').forEach(btn => {
+    btn.onclick = () => { removeCardFromMyDeck(myDeckStore.activeId, btn.dataset.id, 999); renderDecksTabList(); renderDeckDetailView(); };
+  });
+}
+
+// ---------------- Onglet Cartes (page Collection) ----------------
+buildChecklist('coll2-f-set', SETS, it => it[0], it => `${it[1]} (${it[0]})`, setCounts);
+buildChecklist('coll2-f-type', TYPES, t => t, t => t, typeCounts);
+buildChecklist('coll2-f-color', COLORS, c => c, c => c, colorCounts);
+buildChecklist('coll2-f-rarity', RARITIES, r => r, r => r.charAt(0).toUpperCase() + r.slice(1));
+
+let coll2Status = '';
+(function initColl2Status() {
+  const box = document.getElementById('coll2-f-status');
+  const opts = [['', 'Toutes'], ['owned', 'Possédées'], ['unused', 'Non allouées'], ['used', 'Utilisées'], ['over', 'Sur-allouées']];
   for (const [val, label] of opts) {
-    const btn = document.createElement('button');
-    btn.textContent = label;
-    if (val === '') btn.classList.add('active');
-    btn.onclick = () => {
-      collectionFilter = val;
-      box.querySelectorAll('button').forEach(b => b.classList.toggle('active', b === btn));
-      renderCollection();
+    const chip = document.createElement('div');
+    chip.className = 'chip' + (val === '' ? ' active' : '');
+    chip.textContent = label;
+    chip.onclick = () => {
+      coll2Status = val;
+      box.querySelectorAll('.chip').forEach(c => c.classList.toggle('active', c === chip));
+      resetAndRenderColl2();
     };
-    box.appendChild(btn);
+    box.appendChild(chip);
   }
 })();
 
-document.getElementById('collection-open-btn').onclick = () => {
-  document.getElementById('collection-overlay').classList.add('open');
-  renderCollection();
+const coll2State = { page: 0, pageSize: 60, filtered: [] };
+
+function coll2Matches(c) {
+  if (!checklistPasses('coll2-f-set', c.set_code)) return false;
+  if (!checklistPasses('coll2-f-type', c.primary_type)) return false;
+  if (!checklistPasses('coll2-f-color', c.color)) return false;
+  if (!checklistPasses('coll2-f-rarity', c.rarity)) return false;
+  const q = document.getElementById('coll2-q').value.trim().toLowerCase();
+  if (q && !c.name_en.toLowerCase().includes(q) && !(c.name_fr || '').toLowerCase().includes(q)) return false;
+  if (coll2Status) {
+    const { total } = deckUsage(c.id);
+    if (coll2Status === 'owned' && !(c.owned > 0)) return false;
+    if (coll2Status === 'unused' && !(c.owned > 0 && total === 0)) return false;
+    if (coll2Status === 'used' && !(total > 0)) return false;
+    if (coll2Status === 'over' && !(total > c.owned)) return false;
+  }
+  return true;
+}
+
+function applyColl2Filters() { coll2State.filtered = CARDS.filter(coll2Matches); }
+
+function coll2RowHTML(c) {
+  const { usedIn, total } = deckUsage(c.id);
+  const deckTags = usedIn.map(u => `<span class="c2-deck-tag">${escapeHtml(u.name)} ×${u.qty}<button data-act="rmdeck" data-deck="${u.id}" data-id="${c.id}">✕</button></span>`).join('');
+  const deckOptions = Object.entries(myDeckStore.decks).map(([id, d]) => `<option value="${id}">+ ${escapeHtml(d.name)}</option>`).join('');
+  const addPicker = deckOptions ? `<select class="c2-add-deck-select" data-id="${c.id}"><option value="">+ deck</option>${deckOptions}</select>` : '<span class="c2-add-deck" style="opacity:.5;">Crée un deck →</span>';
+  const overWarn = total > c.owned ? ` style="color:#dc2626;"` : '';
+  return `<div class="coll2-row" data-id="${c.id}">
+    <img loading="lazy" src="${c.image}" alt="" data-act="zoom" data-id="${c.id}">
+    <div class="c2-info">
+      <div class="c2-name" data-act="zoom" data-id="${c.id}">${escapeHtml(c.name_en)}</div>
+      <div class="c2-meta">${escapeHtml(c.set_name)} (${c.set_code}) · ${c.rarity}</div>
+      <div class="c2-decks">${deckTags}${addPicker}</div>
+    </div>
+    <div class="c2-owned">
+      <div class="lbl">Possédée</div>
+      <div class="stepper">
+        <button data-act="dec" data-id="${c.id}">−</button>
+        <span${overWarn}>${c.owned}</span>
+        <button data-act="inc" data-id="${c.id}">+</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderColl2() {
+  const box = document.getElementById('coll2-list');
+  const end = (coll2State.page + 1) * coll2State.pageSize;
+  const slice = coll2State.filtered.slice(0, end);
+  box.innerHTML = slice.map(coll2RowHTML).join('');
+  document.getElementById('coll2-count').textContent = `${coll2State.filtered.length} carte(s)`;
+  document.getElementById('coll2-loadmore').style.display = end >= coll2State.filtered.length ? 'none' : 'block';
+}
+
+function resetAndRenderColl2() { coll2State.page = 0; applyColl2Filters(); renderColl2(); }
+
+document.getElementById('coll2-list').addEventListener('click', (e) => {
+  const zoomEl = e.target.closest('[data-act="zoom"]');
+  if (zoomEl) { openLightbox(zoomEl.dataset.id); return; }
+  const btn = e.target.closest('button[data-act]');
+  if (!btn) return;
+  const id = btn.dataset.id;
+  const card = CARDS_BY_ID[id];
+  if (btn.dataset.act === 'inc') { adjustOwned(card, 1); renderColl2(); }
+  else if (btn.dataset.act === 'dec') { adjustOwned(card, -1); renderColl2(); }
+  else if (btn.dataset.act === 'rmdeck') { removeCardFromMyDeck(btn.dataset.deck, id, 1); renderColl2(); renderDecksTabList(); }
+});
+document.getElementById('coll2-list').addEventListener('change', (e) => {
+  if (!e.target.classList.contains('c2-add-deck-select')) return;
+  const deckId = e.target.value;
+  if (!deckId) return;
+  addCardToMyDeck(deckId, e.target.dataset.id, 1);
+  renderColl2();
+  renderDecksTabList();
+});
+document.getElementById('coll2-loadmore').onclick = () => { coll2State.page++; renderColl2(); };
+document.getElementById('coll2-q').addEventListener('input', resetAndRenderColl2);
+document.getElementById('coll2-reset').onclick = () => {
+  document.getElementById('coll2-q').value = '';
+  resetChecklist('coll2-f-set'); resetChecklist('coll2-f-type'); resetChecklist('coll2-f-color'); resetChecklist('coll2-f-rarity');
+  coll2Status = '';
+  document.querySelectorAll('#coll2-f-status .chip').forEach((c, i) => c.classList.toggle('active', i === 0));
+  resetAndRenderColl2();
 };
-document.getElementById('collection-close').onclick = () => document.getElementById('collection-overlay').classList.remove('open');
-document.getElementById('collection-overlay').addEventListener('click', (e) => { if (e.target.id === 'collection-overlay') e.currentTarget.classList.remove('open'); });
+
+// ---------------- Page Collection : onglets + ouverture/fermeture ----------------
+document.getElementById('coll-tab-cards-btn').onclick = () => {
+  document.getElementById('coll-tab-cards-btn').classList.add('active');
+  document.getElementById('coll-tab-decks-btn').classList.remove('active');
+  document.getElementById('coll-view-cards').classList.add('active');
+  document.getElementById('coll-view-decks').classList.remove('active');
+};
+document.getElementById('coll-tab-decks-btn').onclick = () => {
+  document.getElementById('coll-tab-decks-btn').classList.add('active');
+  document.getElementById('coll-tab-cards-btn').classList.remove('active');
+  document.getElementById('coll-view-decks').classList.add('active');
+  document.getElementById('coll-view-cards').classList.remove('active');
+  renderDecksTabList();
+  renderDeckDetailView();
+};
+
+document.getElementById('collection-open-btn').onclick = () => {
+  document.getElementById('collection-screen').classList.add('open');
+  resetAndRenderColl2();
+  renderDecksTabList();
+};
+document.getElementById('collection-page-close').onclick = () => document.getElementById('collection-screen').classList.remove('open');
 document.getElementById('collection-q').addEventListener('input', renderCollection);
 
 // ---------------- Statistiques du deck ----------------
@@ -1710,17 +2153,16 @@ function barRow(label, count, max) {
     <div class="sb-count">${count}</div></div>`;
 }
 
-function renderDeckStats() {
-  const ids = Object.keys(cart);
+function renderDeckStatsFor(cardsMap, deckName) {
+  const ids = Object.keys(cardsMap);
   const sub = document.getElementById('stats-sub');
   const box = document.getElementById('stats-content');
-  const deckName = decksStore.decks[decksStore.activeId].name;
   if (!ids.length) {
     sub.textContent = `Deck "${deckName}" — vide.`;
-    box.innerHTML = '<div class="lex-empty">Ajoute des cartes au panier pour voir les statistiques.</div>';
+    box.innerHTML = '<div class="lex-empty">Ajoute des cartes à ce deck pour voir les statistiques.</div>';
     return;
   }
-  const cards = ids.map(id => ({ card: CARDS_BY_ID[id], qty: cart[id] })).filter(x => x.card);
+  const cards = ids.map(id => ({ card: CARDS_BY_ID[id], qty: cardsMap[id] })).filter(x => x.card);
   const totalQty = cards.reduce((a, x) => a + x.qty, 0);
   sub.textContent = `Deck "${deckName}" — ${totalQty} carte(s) (hors terrains de base).`;
 
@@ -1772,7 +2214,7 @@ function renderDeckStats() {
   else alerts.push({ ok: true, msg: `${rampCount} sources de rampe — bonne quantité.` });
   if (parseFloat(avgCmc) > 3.3) alerts.push({ ok: false, msg: `Coût moyen élevé (${avgCmc}) — pense à ajouter des cartes à 1-2 mana pour lisser la courbe.` });
   else alerts.push({ ok: true, msg: `Coût moyen raisonnable (${avgCmc}).` });
-  if (landCount > 0 && landCount < 30) alerts.push({ ok: false, msg: `${landCount} terrain(s) seulement dans ce panier — un Commander complet en veut generalement 36-38 au total (terrains de base compris, pas forcément ajoutés ici).` });
+  if (landCount > 0 && landCount < 30) alerts.push({ ok: false, msg: `${landCount} terrain(s) seulement dans ce deck — un Commander complet en veut generalement 36-38 au total (terrains de base compris, pas forcément ajoutés ici).` });
 
   box.innerHTML = `
     ${alerts.map(a => `<div class="alert-box ${a.ok ? 'ok' : 'warn'}">${a.ok ? '✓' : '⚠️'} ${escapeHtml(a.msg)}</div>`).join('')}
@@ -1785,10 +2227,6 @@ function renderDeckStats() {
   `;
 }
 
-document.getElementById('drawer-stats-btn').onclick = () => {
-  document.getElementById('stats-overlay').classList.add('open');
-  renderDeckStats();
-};
 document.getElementById('stats-close').onclick = () => document.getElementById('stats-overlay').classList.remove('open');
 document.getElementById('stats-overlay').addEventListener('click', (e) => { if (e.target.id === 'stats-overlay') e.currentTarget.classList.remove('open'); });
 
