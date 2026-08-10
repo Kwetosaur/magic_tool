@@ -1,0 +1,12 @@
+{
+  "name": "Catalogue de cartes Magic",
+  "short_name": "MTG Catalogue",
+  "description": "Catalogue de cartes Magic: The Gathering avec filtres, panier et compteur de vie",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#16171b",
+  "theme_color": "#6d28d9",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}
