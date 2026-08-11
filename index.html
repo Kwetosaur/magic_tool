@@ -418,6 +418,86 @@
   :root[data-theme="dark"] .deck-legality .lg-line.ok { background:#0f2e1c; color:#4ade80; }
   :root[data-theme="dark"] .deck-legality .lg-line.bad { background:#3f1414; color:#f87171; }
 
+  /* Hand tester: cards need to be readable, not thumbnails */
+  .hand-modal { max-width: 1180px; }
+  .hand-grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap:16px; }
+  .hand-grid .hand-card img { width:100%; display:block; border-radius:10px; }
+  .hand-grid .hand-card .hc-name { font-size:0.78rem; font-weight:600; margin-top:5px; text-align:center; }
+  @media (max-width: 640px) { .hand-grid { grid-template-columns: repeat(auto-fill, minmax(140px,1fr)); gap:10px; } }
+
+  /* Commander spotlight at the top of a deck */
+  .cmd-block { display:flex; gap:14px; align-items:center; background:linear-gradient(135deg, var(--accent-bg), transparent);
+    border:1px solid var(--accent); border-radius:14px; padding:12px 14px; margin-bottom:14px; }
+  .cmd-block img { width:78px; border-radius:8px; cursor:pointer; flex-shrink:0; }
+  .cmd-block .cb-label { font-size:0.66rem; text-transform:uppercase; letter-spacing:.05em; color:var(--accent); font-weight:800; }
+  .cmd-block .cb-name { font-size:1.05rem; font-weight:800; margin-top:2px; }
+  .cmd-block .cb-meta { font-size:0.74rem; color:var(--muted); margin-top:3px; }
+  .cmd-block.empty { background:none; border-style:dashed; border-color:var(--border); color:var(--muted); font-size:0.82rem; }
+
+  /* Deck stats: real MTG colours, panelled layout */
+  .stats-panels { display:grid; grid-template-columns:repeat(auto-fit, minmax(290px,1fr)); gap:16px; }
+  .stats-panel { background:var(--panel); border:1px solid var(--border); border-radius:14px; padding:14px 16px; }
+  .stats-panel h4 { margin:0 0 4px; font-size:0.86rem; }
+  .stats-panel .sp-note { font-size:0.68rem; color:var(--muted); margin-bottom:10px; }
+  .pip-row { display:flex; align-items:center; gap:9px; margin-bottom:7px; font-size:0.78rem; }
+  .pip-dot { width:18px; height:18px; border-radius:50%; flex-shrink:0; border:1px solid rgba(128,128,128,.4); }
+  .pip-dot.W { background:#f8f0d0; } .pip-dot.U { background:#2a7fc9; } .pip-dot.B { background:#3b3540; }
+  .pip-dot.R { background:#d3402a; } .pip-dot.G { background:#1f9e5a; } .pip-dot.C { background:#9aa0ac; }
+  .pip-row .pip-track { flex:1; height:14px; background:var(--chip); border-radius:4px; overflow:hidden; }
+  .pip-row .pip-fill { height:100%; border-radius:4px; }
+  .pip-fill.W { background:#e6d9a2; } .pip-fill.U { background:#2a7fc9; } .pip-fill.B { background:#5b5266; }
+  .pip-fill.R { background:#d3402a; } .pip-fill.G { background:#1f9e5a; } .pip-fill.C { background:#9aa0ac; }
+  .pip-row .pip-n { width:34px; text-align:right; font-weight:700; flex-shrink:0; }
+  .curve-row { display:flex; align-items:center; gap:9px; margin-bottom:5px; font-size:0.76rem; }
+  .curve-row .cv-lbl { width:24px; text-align:center; font-weight:700; background:var(--chip); border-radius:5px; padding:2px 0; flex-shrink:0; }
+  .curve-row .cv-track { flex:1; height:14px; background:var(--chip); border-radius:4px; overflow:hidden; }
+  .curve-row .cv-fill { height:100%; background:var(--accent); border-radius:4px; }
+  .curve-row .cv-n { width:26px; text-align:right; color:var(--muted); flex-shrink:0; }
+  .type-chips { display:flex; flex-wrap:wrap; gap:6px; }
+  .type-chips .tchip { background:var(--chip); border-radius:8px; padding:6px 10px; font-size:0.76rem; }
+  .type-chips .tchip b { color:var(--accent); }
+
+  /* Unified placement editor */
+  .placement-summary { display:flex; align-items:center; gap:8px; flex-wrap:wrap; font-size:0.72rem; }
+  .placement-summary .ps-chip { background:var(--chip); border-radius:999px; padding:2px 9px; }
+  .placement-summary .ps-free { font-weight:700; }
+  .btn-place { padding:3px 10px; border-radius:999px; border:1px solid var(--accent); background:var(--accent-bg);
+    color:var(--accent); font-size:0.7rem; cursor:pointer; font-weight:600; }
+  .btn-place:hover { background:var(--accent); color:white; }
+  .place-modal { background:var(--panel); border-radius:16px; max-width:460px; width:100%; max-height:82vh; display:flex; flex-direction:column; overflow:hidden; }
+  .place-modal .pm-head { padding:16px 18px 12px; border-bottom:1px solid var(--border); }
+  .place-modal .pm-head h3 { margin:0 0 2px; font-size:1rem; }
+  .place-modal .pm-body { overflow-y:auto; padding:10px 18px 16px; }
+  .place-line { display:flex; align-items:center; gap:10px; padding:9px 0; border-bottom:1px solid var(--border); font-size:0.84rem; }
+  .place-line .pl-name { flex:1; }
+  .place-line .pl-stepper { display:flex; align-items:center; gap:7px; }
+  .place-line .pl-stepper button { width:26px; height:26px; border-radius:7px; border:1px solid var(--border); background:var(--chip); color:var(--text); cursor:pointer; }
+  .place-line .pl-qty { min-width:18px; text-align:center; font-weight:700; }
+  .place-free { padding:10px 0 4px; font-size:0.8rem; font-weight:700; }
+
+  /* Location tree */
+  .loc-row.expandable { cursor:pointer; }
+  .loc-cards { margin:-4px 0 10px; padding:10px 14px; border:1px solid var(--border); border-top:none;
+    border-radius:0 0 12px 12px; background:var(--chip); }
+  .loc-card-line { display:flex; align-items:center; gap:9px; padding:5px 0; font-size:0.8rem; border-bottom:1px solid var(--border); }
+  .loc-card-line img { width:26px; border-radius:4px; cursor:pointer; }
+  .loc-card-line .lcl-name { flex:1; cursor:pointer; }
+  .loc-card-line .lcl-name:hover { color:var(--accent); }
+  .loc-card-line button { width:22px; height:22px; border-radius:6px; border:1px solid var(--border); background:var(--panel); color:var(--text); cursor:pointer; font-size:0.72rem; }
+  .loc-quickadd { display:flex; gap:6px; margin-top:10px; position:relative; }
+  .loc-quickadd input { flex:1; padding:7px 9px; border-radius:8px; border:1px solid var(--border); background:var(--panel); color:var(--text); font-size:0.8rem; }
+  .loc-suggest { position:absolute; top:100%; left:0; right:0; z-index:5; background:var(--panel); border:1px solid var(--border);
+    border-radius:8px; margin-top:3px; max-height:210px; overflow-y:auto; }
+  .loc-suggest div { padding:7px 10px; font-size:0.8rem; cursor:pointer; }
+  .loc-suggest div:hover { background:var(--accent-bg); color:var(--accent); }
+
+  .kpi-card.clickable { cursor:pointer; transition:transform .1s, border-color .1s; }
+  .kpi-card.clickable:hover { transform:translateY(-2px); border-color:var(--accent); }
+  .kpi-card .kpi-go { font-size:0.62rem; color:var(--accent); margin-top:6px; font-weight:700; }
+  .bar-clickable { cursor:pointer; }
+  .bar-clickable:hover .sb-fill, .bar-clickable:hover .pip-fill { filter:brightness(1.25); }
+  .bar-clickable:hover { color:var(--accent); }
+
   /* ---------------- Mobile ---------------- */
   .filters-toggle { display:none; }
   .filters-overlay { display:none; }
@@ -654,6 +734,17 @@
   </div>
 </div>
 
+<div class="overlay" id="place-overlay">
+  <div class="place-modal">
+    <div class="pm-head">
+      <button class="close-x" id="place-close" style="position:static; float:right;">✕</button>
+      <h3 id="place-title"></h3>
+      <div class="lex-sub" id="place-sub"></div>
+    </div>
+    <div class="pm-body" id="place-body"></div>
+  </div>
+</div>
+
 <div class="overlay" id="deck-import-overlay">
   <div class="lex-modal">
     <div class="lex-head">
@@ -760,7 +851,7 @@
 </div>
 
 <div class="overlay" id="hand-overlay">
-  <div class="lex-modal">
+  <div class="lex-modal hand-modal">
     <div class="lex-head">
       <button class="close-x" id="hand-close" style="position:static; float:right;">✕</button>
       <h2>🃏 Main de test</h2>
@@ -771,7 +862,7 @@
         <button id="hand-redraw">↺ Repiocher</button>
       </div>
     </div>
-    <div class="lex-list"><div class="global-grid" id="hand-grid"></div></div>
+    <div class="lex-list"><div class="hand-grid" id="hand-grid"></div></div>
   </div>
 </div>
 
@@ -1559,15 +1650,6 @@ function openLightbox(id) {
   const fr = c.name_fr ? `<div class="fr">${escapeHtml(c.name_fr)}</div>` : '';
   const inCart = (cart[id]||0) > 0;
   const ownedLine = c.owned > 0 ? `<div class="line owned-line">✓ Déjà dans votre collection${c.owned>1?' (x'+c.owned+')':''}</div>` : '';
-  const { usedIn: lbUsedIn } = deckUsageByName(c);
-  const lbPlaces = physicalPlacements(c);
-  const lbDeckTags = lbUsedIn.map(u => `<span class="c2-deck-tag">🗂️ ${escapeHtml(u.name)} ×${u.qty}<button data-lbrmdeck="${u.id}">✕</button></span>`).join('');
-  const lbLocTags = lbPlaces.map(p => `<span class="c2-loc-tag">${LOC_TYPE_ICON[p.type] || '📍'} ${escapeHtml(p.name)} ×${p.qty}<button data-lbrmloc="${p.locId}">✕</button></span>`).join('');
-  const lbDeckOptions = Object.entries(myDeckStore.decks).map(([did, d]) => `<option value="${did}">${escapeHtml(d.name)}</option>`).join('');
-  const lbLocOptions = Object.entries(locStore.locations).map(([lid, l]) => `<option value="${lid}">${escapeHtml(l.name)}</option>`).join('');
-  const lbAddDeckPicker = lbDeckOptions ? `<select id="lb-add-deck-select"><option value="">+ deck</option>${lbDeckOptions}</select>` : '';
-  const lbAddLocPicker = lbLocOptions ? `<select id="lb-add-loc-select"><option value="">+ emplacement</option>${lbLocOptions}</select>` : '';
-  const lbFree = freeCount(c);
   const lbPrice = cardPrice(c);
   const collectionSection = `<div class="edhrec-section">
     <div class="synergy-title" style="margin-top:0;">Ma collection</div>
@@ -1578,11 +1660,10 @@ function openLightbox(id) {
         <b id="lb-owned-qty">${c.owned}</b>
         <button id="lb-owned-inc" style="width:22px;height:22px;border-radius:6px;border:1px solid var(--border);background:var(--chip);color:var(--text);cursor:pointer;">+</button>
       </span>
-      ${c.owned > 0 ? `<span style="color:${lbFree < 0 ? '#dc2626' : (lbFree > 0 ? '#16a34a' : 'var(--muted)')}; font-size:0.78rem;">${lbFree < 0 ? 'sur-allouée (' + lbFree + ')' : lbFree + ' libre(s)'}</span>` : ''}
       ${lbPrice ? `<span style="color:var(--accent); font-weight:700; font-size:0.8rem;">${lbPrice.toFixed(2)} €${c.owned > 1 ? ' (total ' + (lbPrice * c.owned).toFixed(2) + ' €)' : ''}</span>` : ''}
     </div>
-    <div class="c2-decks" style="margin-top:8px;">${lbDeckTags}${lbLocTags}${lbAddDeckPicker}${lbAddLocPicker}
-      ${!lbDeckOptions && !lbLocOptions ? '<span style="opacity:.6; font-size:0.72rem;">Crée un deck ou un emplacement dans "Ma Collection".</span>' : ''}
+    <div class="placement-summary" style="margin-top:8px;">${placementSummaryHTML(c)}
+      <button class="btn-place" id="lb-place-btn">📍 Ranger</button>
     </div>
   </div>`;
   const synergyChips = c.tags.length
@@ -1634,33 +1715,7 @@ function openLightbox(id) {
   document.getElementById('lb-add').onclick = () => { addToCart(id); openLightbox(id); };
   document.getElementById('lb-owned-inc').onclick = () => { adjustOwned(c, 1); openLightbox(id); };
   document.getElementById('lb-owned-dec').onclick = () => { adjustOwned(c, -1); openLightbox(id); };
-  document.querySelectorAll('[data-lbrmdeck]').forEach(btn => {
-    btn.onclick = () => { removeCardFromMyDeck(btn.dataset.lbrmdeck, id, 1); openLightbox(id); };
-  });
-  const lbAddDeckSelect = document.getElementById('lb-add-deck-select');
-  if (lbAddDeckSelect) {
-    lbAddDeckSelect.onchange = () => {
-      if (!lbAddDeckSelect.value) return;
-      addCardToMyDeck(lbAddDeckSelect.value, id, 1);
-      openLightbox(id);
-    };
-  }
-  document.querySelectorAll('[data-lbrmloc]').forEach(btn => {
-    btn.onclick = () => {
-      const cur = (locStore.assign[cardKey(c)] || {})[btn.dataset.lbrmloc] || 0;
-      setPlacement(c, btn.dataset.lbrmloc, cur - 1);
-      openLightbox(id);
-    };
-  });
-  const lbAddLocSelect = document.getElementById('lb-add-loc-select');
-  if (lbAddLocSelect) {
-    lbAddLocSelect.onchange = () => {
-      if (!lbAddLocSelect.value) return;
-      const cur = (locStore.assign[cardKey(c)] || {})[lbAddLocSelect.value] || 0;
-      setPlacement(c, lbAddLocSelect.value, cur + 1);
-      openLightbox(id);
-    };
-  }
+  document.getElementById('lb-place-btn').onclick = () => openPlaceModal(id);
   document.querySelectorAll('.lang-toggle button').forEach(btn => {
     btn.onclick = () => { textLang = btn.dataset.lang; localStorage.setItem('mtg_text_lang', textLang); openLightbox(id); };
   });
@@ -1793,9 +1848,9 @@ function drawHandFrom(cardsMap, deckName) {
     + (library.length < handSize ? ` — moins de ${handSize} cartes dans ce deck, main réduite à ${n}.` : '') + '.';
   grid.innerHTML = hand.map(id => {
     const c = CARDS_BY_ID[id];
-    return `<div class="global-card">
-      <img loading="lazy" src="${c.image}" alt="${escapeHtml(c.name_en)}">
-      <div class="gc-body"><div class="gc-name">${escapeHtml(c.name_en)}</div></div>
+    return `<div class="hand-card">
+      <img loading="lazy" src="${(c.image||'').replace('/normal/', '/large/') || c.image}" alt="${escapeHtml(c.name_en)}">
+      <div class="hc-name">${escapeHtml(c.name_en)}</div>
     </div>`;
   }).join('');
 }
@@ -2283,6 +2338,17 @@ function renderDeckDetailView() {
   }).join('');
 
   const legality = checkDeckLegality(deck);
+  const cmdCard = deck.commanderId ? CARDS_BY_ID[deck.commanderId] : null;
+  const commanderBlock = !rules.needsCommander ? '' : (cmdCard
+    ? `<div class="cmd-block">
+         <img src="${cmdCard.image}" alt="" data-ddzoom="${cmdCard.id}">
+         <div>
+           <div class="cb-label">👑 Commandant</div>
+           <div class="cb-name">${escapeHtml(cmdCard.name_en)}</div>
+           <div class="cb-meta">${escapeHtml(cmdCard.mana_cost || '')} · ${escapeHtml(cmdCard.type_line)}</div>
+         </div>
+       </div>`
+    : `<div class="cmd-block empty">👑 Aucun commandant désigné — clique sur "commandant" à côté d'une créature légendaire de la liste.</div>`);
   box.innerHTML = `
     <div class="dd-header">
       <h2>${escapeHtml(deck.name)}</h2>
@@ -2296,6 +2362,7 @@ function renderDeckDetailView() {
       </div>
     </div>
     <div class="lex-sub">${totalQty} carte(s) · ${ids.length} unique(s) · valeur estimée ${deckValue.toFixed(2)} € · <i>${escapeHtml(rules.note)}</i></div>
+    ${commanderBlock}
     <div class="deck-legality">${legality.map(l => `<div class="lg-line ${l.ok ? 'ok' : 'bad'}">${l.ok ? '✓' : '⚠️'} ${escapeHtml(l.msg)}</div>`).join('')}</div>
     ${ids.length ? listHtml : '<div class="lex-empty">Ce deck est vide. Utilise "📥 Importer une liste", ou ajoute des cartes depuis l\'onglet "Cartes" / le zoom d\'une carte.</div>'}
     <div class="dd-section-title" style="margin-top:24px;">Statistiques</div>
@@ -2482,28 +2549,35 @@ function applyColl2Filters() {
   coll2State.filtered = list;
 }
 
-function coll2RowHTML(c) {
+// One compact line summarising where every copy sits, plus a single button that
+// opens the full placement editor. Much calmer than chips + two dropdowns per row.
+function placementSummaryHTML(c) {
   const { usedIn, total } = deckUsageByName(c);
   const places = physicalPlacements(c);
-  const deckTags = usedIn.map(u => `<span class="c2-deck-tag">🗂️ ${escapeHtml(u.name)} ×${u.qty}<button data-act="rmdeck" data-deck="${u.id}" data-id="${c.id}">✕</button></span>`).join('');
-  const locTags = places.map(p => `<span class="c2-loc-tag">${LOC_TYPE_ICON[p.type] || '📍'} ${escapeHtml(p.name)} ×${p.qty}<button data-act="rmloc" data-loc="${p.locId}" data-id="${c.id}">✕</button></span>`).join('');
-  const deckOptions = Object.entries(myDeckStore.decks).map(([id, d]) => `<option value="${id}">${escapeHtml(d.name)}</option>`).join('');
-  const locOptions = Object.entries(locStore.locations).map(([id, l]) => `<option value="${id}">${escapeHtml(l.name)}</option>`).join('');
-  const addDeck = deckOptions ? `<select class="c2-add-deck-select" data-id="${c.id}"><option value="">+ deck</option>${deckOptions}</select>` : '';
-  const addLoc = locOptions ? `<select class="c2-add-loc-select" data-id="${c.id}"><option value="">+ emplacement</option>${locOptions}</select>` : '';
   const free = freeCount(c);
+  if (!c.owned && !total) return `<span style="color:var(--muted); font-size:0.7rem;">Non possédée</span>`;
+  const chips = [
+    ...places.map(p => `<span class="ps-chip">${LOC_TYPE_ICON[p.type] || '📍'} ${escapeHtml(p.name)} ×${p.qty}</span>`),
+    ...usedIn.map(u => `<span class="ps-chip">🗂️ ${escapeHtml(u.name)} ×${u.qty}</span>`),
+  ];
+  const freeTxt = free < 0
+    ? `<span class="ps-free" style="color:#dc2626;">⚠ sur-allouée de ${-free}</span>`
+    : `<span class="ps-free" style="color:${free > 0 ? '#16a34a' : 'var(--muted)'};">${free} libre${free > 1 ? 's' : ''}</span>`;
+  return `${chips.join('')}${chips.length ? '' : '<span style="color:var(--muted);">Pas encore rangée</span>'} ${freeTxt}`;
+}
+
+function coll2RowHTML(c) {
+  const { total } = deckUsageByName(c);
   const overWarn = total > c.owned ? ' style="color:#dc2626;"' : '';
-  const freeBadge = c.owned > 0
-    ? (free < 0 ? `<span style="color:#dc2626; font-size:0.66rem;">sur-allouée</span>`
-       : `<span style="color:${free > 0 ? '#16a34a' : 'var(--muted)'}; font-size:0.66rem;">${free} libre${free > 1 ? 's' : ''}</span>`)
-    : '';
   const price = cardPrice(c);
   return `<div class="coll2-row" data-id="${c.id}">
     <img loading="lazy" src="${c.image}" alt="" data-act="zoom" data-id="${c.id}">
     <div class="c2-info">
       <div class="c2-name" data-act="zoom" data-id="${c.id}">${escapeHtml(c.name_en)}</div>
       <div class="c2-meta">${escapeHtml(c.set_name)} (${c.set_code}) · ${c.rarity}${price ? ' · <b>' + price.toFixed(2) + ' €</b>' : ''}</div>
-      <div class="c2-decks">${deckTags}${locTags}${addDeck}${addLoc}</div>
+      <div class="placement-summary">${placementSummaryHTML(c)}
+        <button class="btn-place" data-act="place" data-id="${c.id}">📍 Ranger</button>
+      </div>
     </div>
     <div class="c2-owned">
       <div class="lbl">Possédée</div>
@@ -2512,10 +2586,90 @@ function coll2RowHTML(c) {
         <span${overWarn}>${c.owned}</span>
         <button data-act="inc" data-id="${c.id}">+</button>
       </div>
-      ${freeBadge}
     </div>
   </div>`;
 }
+
+// ---------------- Éditeur de rangement (un seul endroit pour tout gérer) ----------------
+let placeCardId = null;
+
+function openPlaceModal(cardId) {
+  placeCardId = cardId;
+  document.getElementById('place-overlay').classList.add('open');
+  renderPlaceModal();
+}
+
+function renderPlaceModal() {
+  const c = CARDS_BY_ID[placeCardId];
+  if (!c) return;
+  const free = freeCount(c);
+  document.getElementById('place-title').textContent = c.name_en;
+  document.getElementById('place-sub').textContent = `${c.owned} exemplaire(s) possédé(s)`;
+  const assign = locStore.assign[cardKey(c)] || {};
+  const locLines = Object.entries(locStore.locations).map(([id, l]) => `
+    <div class="place-line">
+      <span>${LOC_TYPE_ICON[l.type] || '📍'}</span>
+      <span class="pl-name">${escapeHtml(l.name)}</span>
+      <span class="pl-stepper">
+        <button data-pl-loc="${id}" data-d="-1">−</button>
+        <span class="pl-qty">${assign[id] || 0}</span>
+        <button data-pl-loc="${id}" data-d="1">+</button>
+      </span>
+    </div>`).join('') || '<div class="lex-empty">Aucun emplacement créé.</div>';
+  const deckLines = Object.entries(myDeckStore.decks).map(([id, d]) => {
+    let qty = 0;
+    for (const [cid, n] of Object.entries(d.cards)) {
+      const cc = CARDS_BY_ID[cid];
+      if (cc && cc.name_en.toLowerCase() === cardKey(c)) qty += n;
+    }
+    return `<div class="place-line">
+      <span>🗂️</span>
+      <span class="pl-name">${escapeHtml(d.name)} <span style="color:var(--muted); font-size:0.72rem;">(${escapeHtml(d.format)})</span></span>
+      <span class="pl-stepper">
+        <button data-pl-deck="${id}" data-d="-1">−</button>
+        <span class="pl-qty">${qty}</span>
+        <button data-pl-deck="${id}" data-d="1">+</button>
+      </span>
+    </div>`;
+  }).join('') || '<div class="lex-empty">Aucun deck créé.</div>';
+
+  document.getElementById('place-body').innerHTML = `
+    <div class="place-free" style="color:${free < 0 ? '#dc2626' : (free > 0 ? '#16a34a' : 'var(--muted)')};">
+      ${free < 0 ? `⚠ Sur-allouée de ${-free} exemplaire(s)` : `${free} exemplaire(s) libre(s)`}
+    </div>
+    <div class="dd-section-title" style="margin-top:6px;">Emplacements physiques</div>
+    ${locLines}
+    <div class="dd-section-title">Decks</div>
+    ${deckLines}
+  `;
+
+  document.querySelectorAll('[data-pl-loc]').forEach(btn => {
+    btn.onclick = () => {
+      const cur = (locStore.assign[cardKey(c)] || {})[btn.dataset.plLoc] || 0;
+      setPlacement(c, btn.dataset.plLoc, cur + parseInt(btn.dataset.d, 10));
+      renderPlaceModal();
+      renderColl2();
+    };
+  });
+  document.querySelectorAll('[data-pl-deck]').forEach(btn => {
+    btn.onclick = () => {
+      const d = parseInt(btn.dataset.d, 10);
+      if (d > 0) addCardToMyDeck(btn.dataset.plDeck, c.id, 1);
+      else {
+        // remove from whichever printing of this card the deck actually holds
+        const deck = myDeckStore.decks[btn.dataset.plDeck];
+        const hit = Object.keys(deck.cards).find(cid => CARDS_BY_ID[cid] && CARDS_BY_ID[cid].name_en.toLowerCase() === cardKey(c));
+        if (hit) removeCardFromMyDeck(btn.dataset.plDeck, hit, 1);
+      }
+      renderPlaceModal();
+      renderColl2();
+      renderDecksTabList();
+    };
+  });
+}
+
+document.getElementById('place-close').onclick = () => document.getElementById('place-overlay').classList.remove('open');
+document.getElementById('place-overlay').addEventListener('click', (e) => { if (e.target.id === 'place-overlay') e.currentTarget.classList.remove('open'); });
 
 function coll2TileHTML(c) {
   const price = cardPrice(c);
@@ -2566,25 +2720,7 @@ document.getElementById('coll2-list').addEventListener('click', (e) => {
   const card = CARDS_BY_ID[id];
   if (btn.dataset.act === 'inc') { adjustOwned(card, 1); renderColl2(); }
   else if (btn.dataset.act === 'dec') { adjustOwned(card, -1); renderColl2(); }
-  else if (btn.dataset.act === 'rmdeck') { removeCardFromMyDeck(btn.dataset.deck, id, 1); renderColl2(); renderDecksTabList(); }
-  else if (btn.dataset.act === 'rmloc') {
-    const cur = (locStore.assign[cardKey(card)] || {})[btn.dataset.loc] || 0;
-    setPlacement(card, btn.dataset.loc, cur - 1);
-    renderColl2();
-  }
-});
-document.getElementById('coll2-list').addEventListener('change', (e) => {
-  if (e.target.classList.contains('c2-add-deck-select')) {
-    if (!e.target.value) return;
-    addCardToMyDeck(e.target.value, e.target.dataset.id, 1);
-    renderColl2(); renderDecksTabList();
-  } else if (e.target.classList.contains('c2-add-loc-select')) {
-    if (!e.target.value) return;
-    const card = CARDS_BY_ID[e.target.dataset.id];
-    const cur = (locStore.assign[cardKey(card)] || {})[e.target.value] || 0;
-    setPlacement(card, e.target.value, cur + 1);
-    renderColl2();
-  }
+  else if (btn.dataset.act === 'place') { openPlaceModal(id); }
 });
 document.getElementById('coll2-loadmore').onclick = () => { coll2State.page++; renderColl2(); };
 document.getElementById('coll2-q').addEventListener('input', resetAndRenderColl2);
@@ -2643,17 +2779,17 @@ function renderDashboard() {
     .sort((a, b) => (b[1].owned / b[1].total) - (a[1].owned / a[1].total)).slice(0, 12)
     .map(([code, s]) => {
       const pct = Math.round((s.owned / s.total) * 100);
-      return `<div class="setprog"><div class="sp-head"><span>${escapeHtml(s.name)} (${code})</span><span>${s.owned}/${s.total} · ${pct}%</span></div>
+      return `<div class="setprog bar-clickable" data-kpiset="${code}"><div class="sp-head"><span>${escapeHtml(s.name)} (${code})</span><span>${s.owned}/${s.total} · ${pct}%</span></div>
         <div class="sp-track"><div class="sp-fill" style="width:${pct}%"></div></div></div>`;
     }).join('');
 
   document.getElementById('dash-content').innerHTML = `
     <div class="kpi-grid">
-      <div class="kpi-card"><div class="kpi-val">${totalCopies}</div><div class="kpi-lbl">Exemplaires</div><div class="kpi-sub">${owned.length} cartes différentes</div></div>
-      <div class="kpi-card accent"><div class="kpi-val">${totalValue.toFixed(0)} €</div><div class="kpi-lbl">Valeur estimée</div><div class="kpi-sub">estimation basse (édition la moins chère)</div></div>
-      <div class="kpi-card"><div class="kpi-val">${deckCount}</div><div class="kpi-lbl">Decks</div><div class="kpi-sub">${locCount} emplacement(s)</div></div>
-      <div class="kpi-card ${unplaced ? '' : 'good'}"><div class="kpi-val">${unplaced}</div><div class="kpi-lbl">Sans emplacement</div><div class="kpi-sub">cartes non rangées</div></div>
-      <div class="kpi-card ${over ? 'warn' : 'good'}"><div class="kpi-val">${over}</div><div class="kpi-lbl">Sur-allouées</div><div class="kpi-sub">utilisées + que possédées</div></div>
+      <div class="kpi-card clickable" data-kpi="owned"><div class="kpi-val">${totalCopies}</div><div class="kpi-lbl">Exemplaires</div><div class="kpi-sub">${owned.length} cartes différentes</div><div class="kpi-go">Voir mes cartes →</div></div>
+      <div class="kpi-card accent clickable" data-kpi="value"><div class="kpi-val">${totalValue.toFixed(0)} €</div><div class="kpi-lbl">Valeur estimée</div><div class="kpi-sub">estimation basse (édition la moins chère)</div><div class="kpi-go">Trier par valeur →</div></div>
+      <div class="kpi-card clickable" data-kpi="decks"><div class="kpi-val">${deckCount}</div><div class="kpi-lbl">Decks</div><div class="kpi-sub">${locCount} emplacement(s)</div><div class="kpi-go">Gérer →</div></div>
+      <div class="kpi-card clickable ${unplaced ? '' : 'good'}" data-kpi="unplaced"><div class="kpi-val">${unplaced}</div><div class="kpi-lbl">Sans emplacement</div><div class="kpi-sub">cartes non rangées</div><div class="kpi-go">Les ranger →</div></div>
+      <div class="kpi-card clickable ${over ? 'warn' : 'good'}" data-kpi="over"><div class="kpi-val">${over}</div><div class="kpi-lbl">Sur-allouées</div><div class="kpi-sub">utilisées + que possédées</div><div class="kpi-go">Corriger →</div></div>
     </div>
     <div class="dash-cols">
       <div class="dash-panel">
@@ -2666,37 +2802,91 @@ function renderDashboard() {
       </div>
       <div class="dash-panel">
         <h3>🎯 Répartition par rareté</h3>
-        ${Object.entries(rarityCount).reverse().map(([r, n]) => barRow(r.charAt(0).toUpperCase() + r.slice(1), n, rarityMax)).join('')}
+        ${Object.entries(rarityCount).reverse().map(([r, n]) =>
+          `<div class="bar-clickable" data-kpirarity="${r}">${barRow(r.charAt(0).toUpperCase() + r.slice(1), n, rarityMax)}</div>`).join('')}
         <h3 style="margin-top:18px;">📦 Complétion par extension (top 12)</h3>
         ${setRows || '<div class="lex-empty">Aucune donnée.</div>'}
       </div>
     </div>
   `;
   document.querySelectorAll('[data-dashzoom]').forEach(el => { el.onclick = () => openLightbox(el.dataset.dashzoom); });
+
+  // KPI cards / bars double as shortcuts into a pre-filtered Cartes tab
+  function gotoCards({ status, loc, sort, set, rarity }) {
+    switchCollTab('cards');
+    document.getElementById('coll2-reset').click();
+    if (status) {
+      const labels = { owned: 'Possédées', over: 'Sur-allouées' };
+      const chip = [...document.querySelectorAll('#coll2-f-status .chip')].find(c => c.textContent === labels[status]);
+      if (chip) chip.click();
+    }
+    if (loc) document.getElementById('coll2-f-loc').value = loc;
+    if (sort) document.getElementById('coll2-sort').value = sort;
+    if (set) applyChecklistState('coll2-f-set', { include: [set] });
+    if (rarity) applyChecklistState('coll2-f-rarity', { include: [rarity] });
+    resetAndRenderColl2();
+  }
+  document.querySelectorAll('[data-kpi]').forEach(card => {
+    card.onclick = () => {
+      const k = card.dataset.kpi;
+      if (k === 'owned') gotoCards({ status: 'owned' });
+      else if (k === 'value') gotoCards({ status: 'owned', sort: 'value-desc' });
+      else if (k === 'decks') switchCollTab('decks');
+      else if (k === 'unplaced') gotoCards({ loc: '__none' });
+      else if (k === 'over') gotoCards({ status: 'over' });
+    };
+  });
+  document.querySelectorAll('[data-kpirarity]').forEach(el => {
+    el.onclick = () => gotoCards({ status: 'owned', rarity: el.dataset.kpirarity });
+  });
+  document.querySelectorAll('[data-kpiset]').forEach(el => {
+    el.onclick = () => gotoCards({ status: 'owned', set: el.dataset.kpiset });
+  });
 }
 
 // ---------------- Onglet Emplacements ----------------
+const expandedLocs = new Set();
+
 function renderLocationsTab() {
   const entries = Object.entries(locStore.locations);
   const uniqueCards = dedupeByName(CARDS); // assign is name-keyed, so avoid counting reprints
   const rows = entries.map(([id, l]) => {
+    const contents = [];
     let cards = 0, value = 0;
     for (const c of uniqueCards) {
       const qty = (locStore.assign[cardKey(c)] || {})[id] || 0;
-      if (qty) { cards += qty; value += cardPrice(c) * qty; }
+      if (qty) { cards += qty; value += cardPrice(c) * qty; contents.push({ c, qty }); }
     }
-    return `<div class="loc-row">
+    contents.sort((a, b) => a.c.name_en.localeCompare(b.c.name_en));
+    const isOpen = expandedLocs.has(id);
+    const cardLines = contents.map(({ c, qty }) => `
+      <div class="loc-card-line">
+        <img src="${c.image}" alt="" data-loczoom="${c.id}">
+        <span class="lcl-name" data-loczoom="${c.id}">${escapeHtml(c.name_en)}</span>
+        <span style="color:var(--muted); font-size:0.72rem;">${cardPrice(c) ? cardPrice(c).toFixed(2) + ' €' : ''}</span>
+        <button data-locminus="${id}" data-card="${c.id}">−</button>
+        <span style="min-width:22px; text-align:center; font-weight:700;">${qty}</span>
+        <button data-locplus="${id}" data-card="${c.id}">+</button>
+        <button data-locrm="${id}" data-card="${c.id}" style="color:#dc2626;">✕</button>
+      </div>`).join('');
+    return `<div class="loc-row expandable" data-loctoggle="${id}">
       <div style="font-size:1.4rem;">${LOC_TYPE_ICON[l.type] || '📍'}</div>
       <div class="lr-info">
-        <div class="lr-name">${escapeHtml(l.name)}</div>
+        <div class="lr-name">${isOpen ? '▾' : '▸'} ${escapeHtml(l.name)}</div>
         <div class="lr-meta">${l.type} · ${cards} carte(s) · ${value.toFixed(2)} €</div>
       </div>
       <div class="lr-actions">
-        <button data-locview="${id}">Voir les cartes</button>
+        <button data-locview="${id}">Filtrer</button>
         <button data-locren="${id}">✎</button>
         <button data-locdel="${id}">🗑</button>
       </div>
-    </div>`;
+    </div>
+    ${isOpen ? `<div class="loc-cards">
+      ${cardLines || '<div class="lex-empty" style="padding:10px 0;">Cet emplacement est vide.</div>'}
+      <div class="loc-quickadd">
+        <input type="text" placeholder="Ajouter une carte ici..." data-locadd="${id}" autocomplete="off">
+      </div>
+    </div>` : ''}`;
   }).join('');
 
   const deckRows = Object.entries(myDeckStore.decks).map(([id, d]) => {
@@ -2754,10 +2944,63 @@ function renderLocationsTab() {
     };
   });
   document.querySelectorAll('[data-locview]').forEach(btn => {
-    btn.onclick = () => {
+    btn.onclick = (e) => {
+      e.stopPropagation();
       switchCollTab('cards');
       document.getElementById('coll2-f-loc').value = btn.dataset.locview;
       resetAndRenderColl2();
+    };
+  });
+
+  // Expand / collapse a location to reveal its contents
+  document.querySelectorAll('[data-loctoggle]').forEach(row => {
+    row.onclick = (e) => {
+      if (e.target.closest('button')) return; // let the action buttons do their thing
+      const id = row.dataset.loctoggle;
+      if (expandedLocs.has(id)) expandedLocs.delete(id); else expandedLocs.add(id);
+      renderLocationsTab();
+    };
+  });
+  document.querySelectorAll('[data-loczoom]').forEach(el => {
+    el.onclick = (e) => { e.stopPropagation(); openLightbox(el.dataset.loczoom); };
+  });
+  const adjustLoc = (locId, cardId, delta) => {
+    const card = CARDS_BY_ID[cardId];
+    const cur = (locStore.assign[cardKey(card)] || {})[locId] || 0;
+    setPlacement(card, locId, cur + delta);
+    renderLocationsTab();
+  };
+  document.querySelectorAll('[data-locplus]').forEach(b => { b.onclick = (e) => { e.stopPropagation(); adjustLoc(b.dataset.locplus, b.dataset.card, 1); }; });
+  document.querySelectorAll('[data-locminus]').forEach(b => { b.onclick = (e) => { e.stopPropagation(); adjustLoc(b.dataset.locminus, b.dataset.card, -1); }; });
+  document.querySelectorAll('[data-locrm]').forEach(b => {
+    b.onclick = (e) => {
+      e.stopPropagation();
+      const card = CARDS_BY_ID[b.dataset.card];
+      setPlacement(card, b.dataset.locrm, 0);
+      renderLocationsTab();
+    };
+  });
+
+  // Quick-add with inline suggestions, scoped to cards you actually own
+  document.querySelectorAll('[data-locadd]').forEach(input => {
+    input.onclick = (e) => e.stopPropagation();
+    input.oninput = () => {
+      const wrap = input.parentElement;
+      wrap.querySelectorAll('.loc-suggest').forEach(s => s.remove());
+      const q = input.value.trim().toLowerCase();
+      if (q.length < 2) return;
+      const hits = dedupeByName(CARDS.filter(c => c.owned > 0 && c.name_en.toLowerCase().includes(q))).slice(0, 8);
+      if (!hits.length) return;
+      const box2 = document.createElement('div');
+      box2.className = 'loc-suggest';
+      box2.innerHTML = hits.map(c => `<div data-pick="${c.id}">${escapeHtml(c.name_en)} <span style="color:var(--muted);">(${c.owned} possédée${c.owned>1?'s':''})</span></div>`).join('');
+      box2.onclick = (e) => {
+        e.stopPropagation();
+        const pick = e.target.closest('[data-pick]');
+        if (!pick) return;
+        adjustLoc(input.dataset.locadd, pick.dataset.pick, 1);
+      };
+      wrap.appendChild(box2);
     };
   });
 }
@@ -2818,25 +3061,58 @@ function renderDeckStatsInto(box, cardsMap) {
   }
   const avgCmc = nonlandQty ? (cmcSum / nonlandQty).toFixed(2) : '0';
   const curveMax = Math.max(1, ...Object.values(curve));
-  const curveHtml = [0,1,2,3,4,5,6,7].map(n => barRow(n === 7 ? '7+' : String(n), curve[n] || 0, curveMax)).join('');
+  const curveHtml = [0,1,2,3,4,5,6,7].map(n => {
+    const v = curve[n] || 0;
+    return `<div class="curve-row"><div class="cv-lbl">${n === 7 ? '7+' : n}</div>
+      <div class="cv-track"><div class="cv-fill" style="width:${Math.round((v/curveMax)*100)}%"></div></div>
+      <div class="cv-n">${v}</div></div>`;
+  }).join('');
 
-  // Color distribution (WUBRG letter counts, multicolor counts toward each color)
-  const colorCounts = { W:0, U:0, B:0, R:0, G:0 };
-  let colorless = 0;
+  // Mana PIPS, not "card colours": counting cards marks every land as colourless,
+  // which drowns the real signal. Pip counts are what you actually build a mana base from.
+  const pips = { W:0, U:0, B:0, R:0, G:0 };
+  let genericPips = 0;
   for (const { card, qty } of cards) {
-    const raw = card.colors_raw || '';
-    if (!raw) { colorless += qty; continue; }
-    for (const ch of raw) if (colorCounts[ch] !== undefined) colorCounts[ch] += qty;
+    const cost = card.mana_cost || '';
+    for (const sym of cost.match(/\{[^}]+\}/g) || []) {
+      const inner = sym.slice(1, -1);
+      if (/^\d+$/.test(inner)) { genericPips += parseInt(inner, 10) * qty; continue; }
+      for (const ch of ['W','U','B','R','G']) if (inner.includes(ch)) pips[ch] += qty;
+    }
   }
-  const colorMax = Math.max(1, ...Object.values(colorCounts), colorless);
-  const colorHtml = Object.entries(WUBRG_FR).map(([k, label]) => barRow(label, colorCounts[k], colorMax)).join('')
-    + barRow('Incolore', colorless, colorMax);
+  const pipTotal = Object.values(pips).reduce((a,b) => a+b, 0);
+  const pipMax = Math.max(1, ...Object.values(pips));
+  const pipHtml = Object.entries(WUBRG_FR).map(([k, label]) => {
+    const v = pips[k];
+    if (!v && pipTotal) return '';
+    const pct = pipTotal ? Math.round((v / pipTotal) * 100) : 0;
+    return `<div class="pip-row"><span class="pip-dot ${k}"></span><span style="width:52px;">${label}</span>
+      <div class="pip-track"><div class="pip-fill ${k}" style="width:${Math.round((v/pipMax)*100)}%"></div></div>
+      <span class="pip-n">${v}</span><span style="width:34px; text-align:right; color:var(--muted);">${pct}%</span></div>`;
+  }).join('') || '<div class="lex-empty">Aucun symbole de mana coloré.</div>';
 
-  // Type breakdown
+  // Land colour sources, so you can compare them against the pips above
+  const sources = { W:0, U:0, B:0, R:0, G:0 };
+  for (const { card, qty } of cards) {
+    if (card.primary_type !== 'Land') continue;
+    const txt = (card.oracle_text || '');
+    for (const ch of ['W','U','B','R','G']) {
+      if (txt.includes('{' + ch + '}') || /any color/i.test(txt)) sources[ch] += qty;
+    }
+  }
+  const srcMax = Math.max(1, ...Object.values(sources));
+  const srcHtml = Object.entries(WUBRG_FR).map(([k, label]) => {
+    if (!sources[k] && !pips[k]) return '';
+    return `<div class="pip-row"><span class="pip-dot ${k}"></span><span style="width:52px;">${label}</span>
+      <div class="pip-track"><div class="pip-fill ${k}" style="width:${Math.round((sources[k]/srcMax)*100)}%"></div></div>
+      <span class="pip-n">${sources[k]}</span></div>`;
+  }).join('') || '<div class="lex-empty">Aucun terrain dans ce deck.</div>';
+
+  // Type breakdown as compact chips instead of yet another bar stack
   const typeCounts = {};
   for (const { card, qty } of cards) typeCounts[card.primary_type] = (typeCounts[card.primary_type] || 0) + qty;
-  const typeMax = Math.max(1, ...Object.values(typeCounts));
-  const typeHtml = Object.entries(typeCounts).sort((a,b) => b[1]-a[1]).map(([t, n]) => barRow(t, n, typeMax)).join('');
+  const typeHtml = Object.entries(typeCounts).sort((a,b) => b[1]-a[1])
+    .map(([t, n]) => `<div class="tchip">${escapeHtml(t)} <b>${n}</b></div>`).join('');
 
   // Beginner alerts based on synergy tags already computed for each card
   const tagCount = (tag) => cards.reduce((a, x) => a + (x.card.tags.includes(tag) ? x.qty : 0), 0);
@@ -2858,12 +3134,28 @@ function renderDeckStatsInto(box, cardsMap) {
 
   box.innerHTML = `
     ${alerts.map(a => `<div class="alert-box ${a.ok ? 'ok' : 'warn'}">${a.ok ? '✓' : '⚠️'} ${escapeHtml(a.msg)}</div>`).join('')}
-    <div class="synergy-title" style="margin-top:14px;">Courbe de mana (hors terrains) — moyenne ${avgCmc}</div>
-    ${curveHtml}
-    <div class="synergy-title" style="margin-top:14px;">Répartition des couleurs</div>
-    ${colorHtml}
-    <div class="synergy-title" style="margin-top:14px;">Répartition par type</div>
-    ${typeHtml}
+    <div class="stats-panels" style="margin-top:14px;">
+      <div class="stats-panel">
+        <h4>Courbe de mana</h4>
+        <div class="sp-note">Hors terrains · coût moyen ${avgCmc}</div>
+        ${curveHtml}
+      </div>
+      <div class="stats-panel">
+        <h4>Symboles de mana à payer</h4>
+        <div class="sp-note">Ce que ton deck demande réellement (${pipTotal} symboles colorés + ${genericPips} génériques)</div>
+        ${pipHtml}
+      </div>
+      <div class="stats-panel">
+        <h4>Sources de mana (terrains)</h4>
+        <div class="sp-note">À comparer avec les symboles demandés ci-contre</div>
+        ${srcHtml}
+      </div>
+      <div class="stats-panel">
+        <h4>Répartition par type</h4>
+        <div class="sp-note">${cards.reduce((a,x)=>a+x.qty,0)} cartes au total</div>
+        <div class="type-chips">${typeHtml}</div>
+      </div>
+    </div>
   `;
 }
 
