@@ -87,7 +87,9 @@
   .qty-badge { position:absolute; top:6px; left:6px; z-index:2; background:var(--accent); color:white; font-size:0.7rem; font-weight:700;
     border-radius:999px; padding:2px 7px; display:none; }
 
-  .overlay { position:fixed; inset:0; background:rgba(0,0,0,.6); z-index:50; display:none; align-items:center; justify-content:center; padding: 24px; }
+  /* Must sit above the full-screen panels (collection/life, z-index 200) and the
+     side drawers (61), otherwise modals opened from those screens are invisible. */
+  .overlay { position:fixed; inset:0; background:rgba(0,0,0,.6); z-index:300; display:none; align-items:center; justify-content:center; padding: 24px; }
   .overlay.open { display:flex; }
   .lightbox { background:var(--panel); border-radius:16px; max-width: 900px; width:100%; max-height: 90vh; overflow:auto; display:flex; gap:0; }
   .lightbox img { width: 340px; max-width: 42vw; object-fit:contain; background:var(--chip); flex-shrink:0; }
