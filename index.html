@@ -2519,24 +2519,28 @@ function refreshCollectionViews() {
 }
 
 // ---------------- Import d'une liste dans un deck ----------------
-document.getElementById('deck-import-go').onclick = () => {
+document.getElementById('deck-import-go').onclick = async () => {
   const deck = myDeckStore.decks[myDeckStore.activeId];
   const status = document.getElementById('deck-import-status');
   if (!deck) { status.innerHTML = '<div class="lex-empty">Aucun deck sélectionné.</div>'; return; }
   const lines = document.getElementById('deck-import-text').value.split(/\r?\n/);
   const parsed = lines.map(parseDecklistLine).filter(Boolean);
   if (!parsed.length) { status.innerHTML = '<div class="lex-empty">Rien à importer.</div>'; return; }
+  const btn = document.getElementById('deck-import-go');
+  btn.disabled = true;
+  const { resolved, unmatched } = await resolveDecklistEntries(parsed, status);
   if (document.getElementById('deck-import-replace').checked) deck.cards = {};
-  let added = 0; const unmatched = [];
-  for (const { qty, name } of parsed) {
-    const card = NAME_LOOKUP.get(name.toLowerCase());
-    if (!card) { unmatched.push(name); continue; }
+  let added = 0, fetched = 0;
+  for (const { qty, card } of resolved) {
     deck.cards[card.id] = (deck.cards[card.id] || 0) + qty;
     added += qty;
+    if (card._extra) fetched++;
   }
   persistMyDecks();
+  btn.disabled = false;
   status.innerHTML = `<div class="alert-box ok">✓ ${added} carte(s) ajoutée(s) au deck "${escapeHtml(deck.name)}".</div>`
-    + (unmatched.length ? `<div class="alert-box warn">⚠️ ${unmatched.length} introuvable(s) dans le catalogue : ${escapeHtml(unmatched.slice(0,6).join(', '))}${unmatched.length>6?'...':''}</div>` : '');
+    + (fetched ? `<div class="alert-box ok">🌐 ${fetched} carte(s) récupérée(s) depuis Scryfall (hors des 37 sets du catalogue local).</div>` : '')
+    + (unmatched.length ? `<div class="alert-box warn">⚠️ ${unmatched.length} nom(s) vraiment introuvable(s), même sur Scryfall : ${escapeHtml(unmatched.slice(0,6).map(u => u.name).join(', '))}${unmatched.length>6?'...':''}</div>` : '');
   refreshCollectionViews();
 };
 document.getElementById('deck-import-close').onclick = () => document.getElementById('deck-import-overlay').classList.remove('open');
@@ -3388,38 +3392,202 @@ function renderDeckStatsInto(box, cardsMap) {
 }
 
 // ---------------- Import decklist ----------------
+// Decklist exports are inconsistent about two-faced cards: Scryfall (and this
+// catalog) writes "Front // Back", while Moxfield/Archidekt often export
+// "Front / Back", and some tools export the front face alone. Curly apostrophes
+// also show up. Normalise all of that before matching.
+function normalizeCardName(s) {
+  return (s || '')
+    .toLowerCase()
+    .replace(/[\u2018\u2019\u02BC]/g, "'")
+    .replace(/\s*\/+\s*/g, ' // ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
 const NAME_LOOKUP = new Map();
 for (const c of CARDS) {
-  const key = c.name_en.toLowerCase();
+  const key = normalizeCardName(c.name_en);
   if (!NAME_LOOKUP.has(key)) NAME_LOOKUP.set(key, c);
-  // Also index the front-face name alone for DFC/split cards ("A // B" -> "a").
+  // Also index the front-face name alone ("A // B" -> "a").
   const front = key.split(' // ')[0];
   if (front !== key && !NAME_LOOKUP.has(front)) NAME_LOOKUP.set(front, c);
+}
+
+function lookupCardByName(name) {
+  const norm = normalizeCardName(name);
+  return NAME_LOOKUP.get(norm) || NAME_LOOKUP.get(norm.split(' // ')[0]) || null;
 }
 
 function parseDecklistLine(line) {
   let s = line.trim();
   if (!s || s.startsWith('//') || s.startsWith('#')) return null;
-  if (/^(deck|sideboard|commander|companion)\s*:?\s*$/i.test(s)) return null;
+  if (/^(deck|sideboard|commander|companion|maybeboard|tokens?)\s*:?\s*$/i.test(s)) return null;
   const m = s.match(/^(\d+)\s*x?\s+(.+)$/i);
   let qty = 1, name = s;
   if (m) { qty = parseInt(m[1], 10); name = m[2]; }
-  // Strip trailing set code / collector number annotations, e.g. "(LTC) 123", "[LTC]".
-  name = name.replace(/\s*[\(\[][A-Za-z0-9]{2,6}[\)\]]\s*[\w\-★]*\s*$/, '').trim();
-  name = name.replace(/\s*\*[FE]\*\s*$/i, '').trim(); // foil/etch markers some sites add
+  // Exports append annotations in varying order: "(BLB) 379", "[LTC]", "*F*",
+  // "#tag". Strip repeatedly so any combination/order gets cleaned off the end.
+  let prev;
+  do {
+    prev = name;
+    name = name
+      .replace(/\s*\*[FE]\*\s*$/i, '')                                  // foil / etched
+      .replace(/\s*\^[^^]*\^\s*$/, '')                                   // Moxfield ^tag^
+      .replace(/\s*#.*$/, '')                                            // trailing #comment
+      .replace(/\s*<[^>]*>\s*$/, '')                                      // <tag>
+      .replace(/\s*[\(\[][A-Za-z0-9]{2,6}[\)\]]\s*[A-Za-z0-9\-★]*\s*$/, '') // (SET) 123
+      .replace(/\s+\d{1,4}[a-z]?$/i, '')                                  // bare trailing collector no.
+      .trim();
+  } while (name !== prev && name);
   if (!name) return null;
   return { qty, name };
 }
 
+// ---------------- Scryfall fallback for cards outside the 37-set catalog ----------------
+// The local catalog only covers 37 sets, but decklists reference anything ever
+// printed. Rather than guessing which sets to bundle, unknown cards are fetched
+// live and cached, so any card in Magic's history imports correctly.
+const EXTRA_CARDS_KEY = 'mtg_extra_cards_v1';
+const JS_COLOR_NAMES = { W: 'Blanc', U: 'Bleu', B: 'Noir', R: 'Rouge', G: 'Vert' };
+const JS_PRIMARY_TYPES = ['Land', 'Creature', 'Planeswalker', 'Battle', 'Instant', 'Sorcery', 'Artifact', 'Enchantment', 'Kindred'];
+
+function jsColorLabel(colors) {
+  if (!colors || !colors.length) return 'Incolore';
+  if (colors.length >= 3) return 'Multicolore';
+  return colors.map(c => JS_COLOR_NAMES[c]).filter(Boolean).join('/');
+}
+function jsPrimaryType(tl) {
+  const t = (tl || '').split('//')[0];
+  for (const p of JS_PRIMARY_TYPES) if (t.includes(p)) return p;
+  return 'Autre';
+}
+function jsFaceJoin(c, key) {
+  if (c[key]) return c[key];
+  if (c.card_faces) {
+    const v = c.card_faces.map(f => f[key]).filter(Boolean);
+    if (v.length) return v.join(' // ');
+  }
+  return '';
+}
+function scryfallToRow(c) {
+  const uris = c.image_uris || (c.card_faces && c.card_faces[0] && c.card_faces[0].image_uris) || {};
+  let colors = c.colors;
+  if (!colors && c.card_faces) colors = [...new Set(c.card_faces.flatMap(f => f.colors || []))];
+  const tl = c.type_line || '';
+  return {
+    id: c.id,
+    set_code: c.set,
+    set_name: c.set_name,
+    collector_number: c.collector_number,
+    name_en: c.name,
+    name_fr: '',
+    text_fr: '', type_line_fr: '', flavor_fr: '',
+    mana_cost: jsFaceJoin(c, 'mana_cost'),
+    cmc: c.cmc || 0,
+    color: jsColorLabel(colors || []),
+    colors_raw: (colors || []).join(''),
+    type_line: tl,
+    primary_type: jsPrimaryType(tl),
+    creature_types: tl.includes('—') ? tl.split('//')[0].split('—')[1].trim() : '',
+    power: c.power || jsFaceJoin(c, 'power') || '',
+    toughness: c.toughness || jsFaceJoin(c, 'toughness') || '',
+    loyalty: c.loyalty || '',
+    rarity: c.rarity,
+    price_eur: (c.prices && c.prices.eur) || '',
+    price_usd: (c.prices && c.prices.usd) || '',
+    image: uris.normal || uris.large || '',
+    oracle_text: c.oracle_text || (c.card_faces ? c.card_faces.map(f => f.oracle_text || '').join('\n') : ''),
+    scryfall_uri: c.scryfall_uri || '',
+    tags: [],          // synergy tags are computed offline by the build script
+    owned: 0,
+    _extra: true,      // marks a card pulled in live rather than bundled
+  };
+}
+
+function registerExtraCards(rows, persist = true) {
+  const added = [];
+  for (const r of rows) {
+    if (CARDS_BY_ID[r.id]) continue;
+    CARDS.push(r);
+    CARDS_BY_ID[r.id] = r;
+    const key = normalizeCardName(r.name_en);
+    if (!NAME_LOOKUP.has(key)) NAME_LOOKUP.set(key, r);
+    const front = key.split(' // ')[0];
+    if (front !== key && !NAME_LOOKUP.has(front)) NAME_LOOKUP.set(front, r);
+    added.push(r);
+  }
+  if (persist && added.length) {
+    let store = [];
+    try { store = JSON.parse(localStorage.getItem(EXTRA_CARDS_KEY) || '[]'); } catch (e) { store = []; }
+    store.push(...added);
+    try { localStorage.setItem(EXTRA_CARDS_KEY, JSON.stringify(store)); } catch (e) { /* quota */ }
+  }
+  return added;
+}
+
+// Re-apply anything fetched in a previous session so saved decks still resolve.
+try {
+  const cached = JSON.parse(localStorage.getItem(EXTRA_CARDS_KEY) || '[]');
+  if (cached.length) registerExtraCards(cached, false);
+} catch (e) { /* ignore */ }
+
+// Scryfall's collection endpoint takes up to 75 identifiers per POST.
+async function fetchCardsByName(names) {
+  const found = [], stillMissing = [];
+  for (let i = 0; i < names.length; i += 75) {
+    const chunk = names.slice(i, i + 75);
+    try {
+      const res = await fetch('https://api.scryfall.com/cards/collection', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ identifiers: chunk.map(n => ({ name: n })) }),
+      });
+      const data = await res.json();
+      for (const c of (data.data || [])) found.push(c);
+      for (const nf of (data.not_found || [])) stillMissing.push(nf.name);
+    } catch (e) {
+      stillMissing.push(...chunk);
+    }
+    if (i + 75 < names.length) await new Promise(r => setTimeout(r, 120));
+  }
+  return { found, stillMissing };
+}
+
+// Resolves every parsed line, pulling unknown cards from Scryfall when needed.
+async function resolveDecklistEntries(parsed, statusEl) {
+  const resolved = [], unknownNames = [];
+  for (const p of parsed) {
+    const card = lookupCardByName(p.name);
+    if (card) resolved.push({ ...p, card });
+    else unknownNames.push(p.name);
+  }
+  if (!unknownNames.length) return { resolved, unmatched: [] };
+
+  if (statusEl) statusEl.innerHTML = `<div class="scan-status">Recherche de ${unknownNames.length} carte(s) hors catalogue sur Scryfall...</div>`;
+  const uniqueUnknown = [...new Set(unknownNames)];
+  const { found } = await fetchCardsByName(uniqueUnknown);
+  registerExtraCards(found.map(scryfallToRow));
+
+  const unmatched = [];
+  for (const p of parsed) {
+    if (resolved.some(r => r.name === p.name && r.qty === p.qty)) continue;
+    const card = lookupCardByName(p.name);
+    if (card) resolved.push({ ...p, card });
+    else unmatched.push(p);
+  }
+  return { resolved, unmatched };
+}
+
 let lastImportResults = null;
 
-document.getElementById('import-analyze').onclick = () => {
+document.getElementById('import-analyze').onclick = async () => {
+  const box0 = document.getElementById('import-results');
   const lines = document.getElementById('import-text').value.split(/\r?\n/);
   const parsed = lines.map(parseDecklistLine).filter(Boolean);
-  const owned = [], missing = [], unmatched = [];
-  for (const { qty, name } of parsed) {
-    const card = NAME_LOOKUP.get(name.toLowerCase());
-    if (!card) { unmatched.push({ qty, name }); continue; }
+  const { resolved, unmatched } = await resolveDecklistEntries(parsed, box0);
+  const owned = [], missing = [];
+  for (const { qty, card } of resolved) {
     if (card.owned > 0) owned.push({ qty, card }); else missing.push({ qty, card });
   }
   lastImportResults = { owned, missing, unmatched };
