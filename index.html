@@ -352,6 +352,23 @@
   .dd-card-row .dd-qty-btns button { width:20px; height:20px; border-radius:5px; border:1px solid var(--border); background:var(--chip); color:var(--text); cursor:pointer; font-size:0.7rem; }
   .dd-section-title { font-weight:700; font-size:0.8rem; text-transform:uppercase; letter-spacing:.03em; color:var(--muted); margin:16px 0 6px; }
 
+  /* Visual decklist */
+  .dd-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(112px,1fr)); gap:10px; }
+  .dd-tile { position:relative; border-radius:9px; overflow:hidden; background:var(--chip); border:1px solid var(--border); }
+  .dd-tile img { width:100%; display:block; aspect-ratio:5/7; object-fit:cover; cursor:pointer; }
+  .dd-tile.is-cmd { border-color:var(--accent); box-shadow:0 0 0 2px var(--accent) inset; }
+  .dd-tile.short { border-color:#dc2626; }
+  .dd-tile .dt-qty { position:absolute; top:5px; left:5px; background:rgba(0,0,0,.8); color:#fff; font-size:0.68rem;
+    font-weight:800; border-radius:999px; padding:2px 7px; }
+  .dd-tile .dt-price { position:absolute; top:5px; right:5px; background:rgba(0,0,0,.8); color:#fff; font-size:0.6rem;
+    border-radius:999px; padding:2px 6px; }
+  .dd-tile .dt-warn { position:absolute; bottom:26px; left:0; right:0; background:#dc2626; color:#fff; font-size:0.58rem; text-align:center; padding:2px; }
+  .dd-tile .dt-bar { display:flex; align-items:center; justify-content:space-between; padding:3px 5px; background:var(--panel); }
+  .dd-tile .dt-bar button { width:20px; height:20px; border-radius:5px; border:1px solid var(--border); background:var(--chip);
+    color:var(--text); cursor:pointer; font-size:0.7rem; line-height:1; }
+  .dd-tile .dt-bar .dt-cmd { color:var(--accent); font-size:0.62rem; cursor:pointer; background:none; border:none; }
+  .dd-view-toggle { padding:7px 12px; border-radius:8px; border:1px solid var(--border); background:var(--chip); color:var(--text); cursor:pointer; font-size:0.78rem; }
+
   /* KPI dashboard */
   .kpi-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(150px,1fr)); gap:12px; margin-bottom:20px; }
   .kpi-card { background:var(--panel); border:1px solid var(--border); border-radius:14px; padding:14px 16px; }
@@ -490,6 +507,25 @@
     border-radius:8px; margin-top:3px; max-height:210px; overflow-y:auto; }
   .loc-suggest div { padding:7px 10px; font-size:0.8rem; cursor:pointer; }
   .loc-suggest div:hover { background:var(--accent-bg); color:var(--accent); }
+
+  /* Extensions page */
+  .setcard-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(300px,1fr)); gap:12px; }
+  .setcard { background:var(--panel); border:1px solid var(--border); border-radius:12px; padding:12px 14px; cursor:pointer; transition:border-color .1s, transform .1s; }
+  .setcard:hover { border-color:var(--accent); transform:translateY(-2px); }
+  .setcard .sc-top { display:flex; align-items:center; gap:10px; margin-bottom:8px; }
+  .setcard .sc-icon { width:24px; height:24px; flex-shrink:0; filter:var(--set-icon-filter, none); }
+  .setcard .sc-name { font-weight:700; font-size:0.86rem; line-height:1.2; }
+  .setcard .sc-code { font-size:0.68rem; color:var(--muted); }
+  .setcard .sc-pct { margin-left:auto; font-size:1.15rem; font-weight:800; color:var(--accent); }
+  .setcard .sc-track { height:8px; background:var(--chip); border-radius:4px; overflow:hidden; margin-bottom:7px; }
+  .setcard .sc-fill { height:100%; background:var(--accent); border-radius:4px; }
+  .setcard .sc-stats { display:flex; gap:12px; font-size:0.7rem; color:var(--muted); flex-wrap:wrap; }
+  .setcard .sc-stats b { color:var(--text); }
+  .setcard.complete { border-color:#16a34a; }
+  .setcard.complete .sc-pct, .setcard.complete .sc-fill { color:#16a34a; background:#16a34a; }
+  .setcard.complete .sc-pct { background:none; }
+  .sets-summary { display:flex; gap:14px; flex-wrap:wrap; margin-bottom:14px; font-size:0.82rem; }
+  .sets-summary span b { color:var(--accent); font-size:1.05rem; }
 
   .kpi-card.clickable { cursor:pointer; transition:transform .1s, border-color .1s; }
   .kpi-card.clickable:hover { transform:translateY(-2px); border-color:var(--accent); }
@@ -673,6 +709,7 @@
     <button id="coll-tab-dash-btn" class="active">📊 Vue d'ensemble</button>
     <button id="coll-tab-cards-btn">📚 Cartes</button>
     <button id="coll-tab-decks-btn">🗂️ Mes Decks</button>
+    <button id="coll-tab-sets-btn">📦 Extensions</button>
     <button id="coll-tab-loc-btn">📍 Emplacements</button>
     <button id="coll-scan-btn2">📷 Scanner</button>
     <button id="collection-page-close">✕ Fermer</button>
@@ -727,6 +764,23 @@
         <div id="coll-decks-items"></div>
       </div>
       <div class="coll-deck-detail" id="coll-deck-detail"><div class="lex-empty">Sélectionne ou crée un deck.</div></div>
+    </div>
+    <div class="coll-view" id="coll-view-sets">
+      <div class="coll-main">
+        <div class="coll-actionbar">
+          <input type="text" id="sets-q" placeholder="Rechercher une extension..." style="max-width:260px;">
+          <select id="sets-sort">
+            <option value="pct-desc">Trier : Complétion ↓</option>
+            <option value="pct-asc">Complétion ↑</option>
+            <option value="owned-desc">Cartes possédées ↓</option>
+            <option value="value-desc">Valeur possédée ↓</option>
+            <option value="name">Nom (A→Z)</option>
+            <option value="size-desc">Taille de l'extension ↓</option>
+          </select>
+          <label class="checkitem" style="margin:0;"><input type="checkbox" id="sets-only-owned"> <span class="lbl">Seulement celles où j'ai des cartes</span></label>
+        </div>
+        <div id="sets-content"></div>
+      </div>
     </div>
     <div class="coll-view" id="coll-view-loc">
       <div class="coll-main" id="loc-content"></div>
@@ -2298,6 +2352,8 @@ document.getElementById('coll-decks-items').addEventListener('click', (e) => {
   renderDeckDetailView();
 });
 
+let deckViewGrid = localStorage.getItem('mtg_deck_view_grid') !== '0';
+
 function renderDeckDetailView() {
   const box = document.getElementById('coll-deck-detail');
   const deck = myDeckStore.decks[myDeckStore.activeId];
@@ -2316,25 +2372,43 @@ function renderDeckDetailView() {
   }
   const groupOrder = ['Creature', 'Planeswalker', 'Instant', 'Sorcery', 'Artifact', 'Enchantment', 'Battle', 'Land', 'Autre'];
   const listHtml = groupOrder.filter(g => groups[g]).map(g => {
-    const rows = groups[g].sort((a, b) => a.c.name_en.localeCompare(b.c.name_en)).map(({ id, c, qty }) => {
-      const isCmd = deck.commanderId === id;
-      const short = c.owned < qty;
-      const canBeCmd = /Legendary/.test(c.type_line) && /Creature|Planeswalker/.test(c.type_line);
-      return `<div class="dd-card-row">
-        <img src="${c.image}" alt="" data-ddzoom="${id}" style="cursor:pointer;">
-        <div class="dd-name" data-ddzoom="${id}" style="cursor:pointer;">
-          ${isCmd ? '👑 ' : ''}${escapeHtml(c.name_en)}
-          ${short ? `<span style="color:#dc2626; font-size:0.72rem;"> (tu n'en as que ${c.owned})</span>` : ''}
-        </div>
-        <div style="color:var(--muted); font-size:0.72rem;">${cardPrice(c) ? cardPrice(c).toFixed(2) + ' €' : ''}</div>
-        <div class="dd-qty-btns" style="display:flex; align-items:center; gap:5px;">
-          <button data-ddminus="${id}">−</button><span>×${qty}</span><button data-ddplus="${id}">+</button>
-        </div>
-        ${rules.needsCommander && canBeCmd ? `<button class="rm" style="color:var(--accent);" data-ddcmd="${id}">${isCmd ? 'retirer 👑' : 'commandant'}</button>` : ''}
-        <button class="rm" data-ddrm="${id}">suppr.</button>
-      </div>`;
-    }).join('');
-    return `<div class="dd-section-title">${g} (${groups[g].reduce((a, x) => a + x.qty, 0)})</div>${rows}`;
+    const sorted = groups[g].sort((a, b) => a.c.name_en.localeCompare(b.c.name_en));
+    const body = deckViewGrid
+      ? `<div class="dd-grid">${sorted.map(({ id, c, qty }) => {
+          const isCmd = deck.commanderId === id;
+          const short = c.owned < qty;
+          const canBeCmd = /Legendary/.test(c.type_line) && /Creature|Planeswalker/.test(c.type_line);
+          return `<div class="dd-tile ${isCmd ? 'is-cmd' : ''} ${short ? 'short' : ''}" title="${escapeHtml(c.name_en)}">
+            <span class="dt-qty">${isCmd ? '👑 ' : ''}×${qty}</span>
+            ${cardPrice(c) ? `<span class="dt-price">${cardPrice(c).toFixed(2)}€</span>` : ''}
+            <img loading="lazy" src="${c.image}" alt="" data-ddzoom="${id}">
+            ${short ? `<div class="dt-warn">tu n'en as que ${c.owned}</div>` : ''}
+            <div class="dt-bar">
+              <button data-ddminus="${id}">−</button>
+              ${rules.needsCommander && canBeCmd ? `<button class="dt-cmd" data-ddcmd="${id}">${isCmd ? '✕👑' : '👑'}</button>` : '<span></span>'}
+              <button data-ddplus="${id}">+</button>
+            </div>
+          </div>`;
+        }).join('')}</div>`
+      : sorted.map(({ id, c, qty }) => {
+          const isCmd = deck.commanderId === id;
+          const short = c.owned < qty;
+          const canBeCmd = /Legendary/.test(c.type_line) && /Creature|Planeswalker/.test(c.type_line);
+          return `<div class="dd-card-row">
+            <img src="${c.image}" alt="" data-ddzoom="${id}" style="cursor:pointer;">
+            <div class="dd-name" data-ddzoom="${id}" style="cursor:pointer;">
+              ${isCmd ? '👑 ' : ''}${escapeHtml(c.name_en)}
+              ${short ? `<span style="color:#dc2626; font-size:0.72rem;"> (tu n'en as que ${c.owned})</span>` : ''}
+            </div>
+            <div style="color:var(--muted); font-size:0.72rem;">${cardPrice(c) ? cardPrice(c).toFixed(2) + ' €' : ''}</div>
+            <div class="dd-qty-btns" style="display:flex; align-items:center; gap:5px;">
+              <button data-ddminus="${id}">−</button><span>×${qty}</span><button data-ddplus="${id}">+</button>
+            </div>
+            ${rules.needsCommander && canBeCmd ? `<button class="rm" style="color:var(--accent);" data-ddcmd="${id}">${isCmd ? 'retirer 👑' : 'commandant'}</button>` : ''}
+            <button class="rm" data-ddrm="${id}">suppr.</button>
+          </div>`;
+        }).join('');
+    return `<div class="dd-section-title">${g} (${groups[g].reduce((a, x) => a + x.qty, 0)})</div>${body}`;
   }).join('');
 
   const legality = checkDeckLegality(deck);
@@ -2354,6 +2428,7 @@ function renderDeckDetailView() {
       <h2>${escapeHtml(deck.name)}</h2>
       <span class="rarity common">${escapeHtml(deck.format)}</span>
       <div class="dd-actions">
+        <button class="dd-view-toggle" id="dd-view-toggle">${deckViewGrid ? '☰ Vue liste' : '🔲 Vue visuelle'}</button>
         <button id="dd-import-btn">📥 Importer une liste</button>
         <button id="dd-hand-btn">🃏 Test pioche</button>
         <button id="dd-export-btn">⬇ Exporter .txt</button>
@@ -2370,6 +2445,11 @@ function renderDeckDetailView() {
   `;
   renderDeckStatsInto(document.getElementById('dd-inline-stats'), deck.cards);
 
+  document.getElementById('dd-view-toggle').onclick = () => {
+    deckViewGrid = !deckViewGrid;
+    localStorage.setItem('mtg_deck_view_grid', deckViewGrid ? '1' : '0');
+    renderDeckDetailView();
+  };
   document.getElementById('dd-hand-btn').onclick = () => {
     document.getElementById('hand-overlay').classList.add('open');
     drawHandFrom(deck.cards, deck.name);
@@ -2466,7 +2546,7 @@ document.getElementById('deck-import-overlay').addEventListener('click', (e) => 
 buildChecklist('coll2-f-set', SETS, it => it[0], it => `${it[1]} (${it[0]})`, setCounts);
 buildChecklist('coll2-f-type', TYPES, t => t, t => t, typeCounts);
 buildChecklist('coll2-f-color', COLORS, c => c, c => c, colorCounts);
-buildChecklist('coll2-f-rarity', RARITIES, r => r, r => r.charAt(0).toUpperCase() + r.slice(1));
+buildChecklist('coll2-f-rarity', RARITIES, r => r, r => r.charAt(0).toUpperCase() + r.slice(1), rarityCounts);
 
 let coll2Status = '';
 (function initColl2Status() {
@@ -2500,41 +2580,84 @@ function refreshLocFilterOptions() {
   if (sel.selectedIndex < 0) sel.value = '';
 }
 
-function coll2Matches(c) {
-  if (!checklistPasses('coll2-f-set', c.set_code)) return false;
-  if (!checklistPasses('coll2-f-type', c.primary_type)) return false;
-  if (!checklistPasses('coll2-f-color', c.color)) return false;
-  if (!checklistPasses('coll2-f-rarity', c.rarity)) return false;
-  const q = document.getElementById('coll2-q').value.trim().toLowerCase();
-  if (q && !c.name_en.toLowerCase().includes(q) && !(c.name_fr || '').toLowerCase().includes(q)) return false;
-  if (coll2Status) {
-    const { total } = deckUsageByName(c);
-    if (coll2Status === 'owned' && !(c.owned > 0)) return false;
-    if (coll2Status === 'missing' && c.owned > 0) return false;
-    if (coll2Status === 'unused' && !(c.owned > 0 && total === 0)) return false;
-    if (coll2Status === 'used' && !(total > 0)) return false;
-    if (coll2Status === 'over' && !(total > c.owned)) return false;
-    if (coll2Status === 'free' && !(c.owned > 0 && freeCount(c) > 0)) return false;
-  }
-  const locFilter = document.getElementById('coll2-f-loc').value;
-  if (locFilter) {
-    if (locFilter === '__none') {
-      if (!(c.owned > 0 && placedCount(c) === 0)) return false;
-    } else if (locFilter.startsWith('deck:')) {
-      const did = locFilter.slice(5);
-      if (!deckUsageByName(c).usedIn.some(u => u.id === did)) return false;
-    } else {
-      if (!physicalPlacements(c).some(p => p.locId === locFilter)) return false;
+// Each facet is checked separately so the sidebar can compute "how many would
+// match if I also picked this value" (faceted counts), not just whole-catalog totals.
+function coll2FacetPasses(c, facet) {
+  switch (facet) {
+    case 'set': return checklistPasses('coll2-f-set', c.set_code);
+    case 'type': return checklistPasses('coll2-f-type', c.primary_type);
+    case 'color': return checklistPasses('coll2-f-color', c.color);
+    case 'rarity': return checklistPasses('coll2-f-rarity', c.rarity);
+    case 'q': {
+      const q = document.getElementById('coll2-q').value.trim().toLowerCase();
+      return !q || c.name_en.toLowerCase().includes(q) || (c.name_fr || '').toLowerCase().includes(q);
     }
+    case 'status': {
+      if (!coll2Status) return true;
+      const { total } = deckUsageByName(c);
+      const free = freeCount(c);
+      if (coll2Status === 'owned') return c.owned > 0;
+      if (coll2Status === 'missing') return !(c.owned > 0);
+      if (coll2Status === 'unused') return c.owned > 0 && total === 0;
+      if (coll2Status === 'used') return total > 0;
+      // Over-allocated must match the dashboard KPI exactly: it counts physical
+      // placements too, not just deck usage.
+      if (coll2Status === 'over') return free < 0;
+      if (coll2Status === 'free') return c.owned > 0 && free > 0;
+      return true;
+    }
+    case 'loc': {
+      const locFilter = document.getElementById('coll2-f-loc').value;
+      if (!locFilter) return true;
+      if (locFilter === '__none') return c.owned > 0 && placedCount(c) === 0;
+      if (locFilter.startsWith('deck:')) return deckUsageByName(c).usedIn.some(u => u.id === locFilter.slice(5));
+      return physicalPlacements(c).some(p => p.locId === locFilter);
+    }
+    default: return true;
+  }
+}
+
+const COLL2_FACETS = ['set', 'type', 'color', 'rarity', 'q', 'status', 'loc'];
+
+function coll2Matches(c, exceptFacet) {
+  for (const f of COLL2_FACETS) {
+    if (f === exceptFacet) continue;
+    if (!coll2FacetPasses(c, f)) return false;
   }
   return true;
+}
+
+// Recompute each checklist's numbers against everything EXCEPT itself, so the
+// counts always describe what you'd actually get by ticking that box.
+function refreshFacetCounts() {
+  const specs = [
+    ['coll2-f-set', 'set', (c) => c.set_code],
+    ['coll2-f-type', 'type', (c) => c.primary_type],
+    ['coll2-f-color', 'color', (c) => c.color],
+    ['coll2-f-rarity', 'rarity', (c) => c.rarity],
+  ];
+  for (const [containerId, facet, keyFn] of specs) {
+    const counts = {};
+    for (const c of dedupeByName(CARDS.filter(x => coll2Matches(x, facet)))) {
+      const k = keyFn(c);
+      counts[k] = (counts[k] || 0) + 1;
+    }
+    const reg = checklistRegistry[containerId];
+    if (!reg) continue;
+    for (const [value, el] of Object.entries(reg.els)) {
+      const n = counts[value] || 0;
+      const numEl = el.querySelector('.n');
+      if (numEl) numEl.textContent = n;
+      el.style.opacity = n === 0 && el.dataset.state === '' ? '.35' : '';
+    }
+  }
 }
 
 const RARITY_ORDER = { mythic: 4, rare: 3, uncommon: 2, common: 1 };
 function applyColl2Filters() {
   // Dedupe AFTER filtering so a set filter still shows that set's printing,
   // but an unfiltered collection view lists each card once (not once per reprint).
-  let list = dedupeByName(CARDS.filter(coll2Matches));
+  let list = dedupeByName(CARDS.filter(c => coll2Matches(c)));
   const sort = document.getElementById('coll2-sort').value;
   const cmp = {
     'name': (a, b) => a.name_en.localeCompare(b.name_en),
@@ -2709,7 +2832,13 @@ function renderColl2() {
   document.getElementById('coll2-loadmore').style.display = end >= coll2State.filtered.length ? 'none' : 'block';
 }
 
-function resetAndRenderColl2() { coll2State.page = 0; refreshLocFilterOptions(); applyColl2Filters(); renderColl2(); }
+function resetAndRenderColl2() {
+  coll2State.page = 0;
+  refreshLocFilterOptions();
+  applyColl2Filters();
+  refreshFacetCounts();
+  renderColl2();
+}
 
 document.getElementById('coll2-list').addEventListener('click', (e) => {
   const zoomEl = e.target.closest('[data-act="zoom"]');
@@ -2768,6 +2897,17 @@ function renderDashboard() {
   const topCards = [...owned].sort((a, b) => cardPrice(b) * b.owned - cardPrice(a) * a.owned).slice(0, 10);
   const rarityMax = Math.max(1, ...Object.values(rarityCount));
 
+  // Second KPI row
+  const avgValue = owned.length ? totalValue / totalCopies : 0;
+  const priciest = owned.reduce((best, c) => cardPrice(c) > cardPrice(best || {}) ? c : best, null);
+  const duplicates = owned.filter(c => c.owned > 1).length;
+  const playsets = owned.filter(c => c.owned >= 4).length;
+  const inDecksCopies = owned.reduce((a, c) => a + Math.min(deckUsageByName(c).total, c.owned), 0);
+  const storedCopies = owned.reduce((a, c) => a + physicalPlacements(c).reduce((s, p) => s + p.qty, 0), 0);
+  const catalogNames = new Set(CARDS.map(c => c.name_en.toLowerCase())).size;
+  const globalPct = catalogNames ? ((owned.length / catalogNames) * 100).toFixed(1) : '0';
+  const setsRepresented = new Set(owned.map(c => c.set_code)).size;
+
   // Set completion (only sets where the user owns at least one card)
   const bySet = {};
   for (const c of CARDS) {
@@ -2790,6 +2930,13 @@ function renderDashboard() {
       <div class="kpi-card clickable" data-kpi="decks"><div class="kpi-val">${deckCount}</div><div class="kpi-lbl">Decks</div><div class="kpi-sub">${locCount} emplacement(s)</div><div class="kpi-go">Gérer →</div></div>
       <div class="kpi-card clickable ${unplaced ? '' : 'good'}" data-kpi="unplaced"><div class="kpi-val">${unplaced}</div><div class="kpi-lbl">Sans emplacement</div><div class="kpi-sub">cartes non rangées</div><div class="kpi-go">Les ranger →</div></div>
       <div class="kpi-card clickable ${over ? 'warn' : 'good'}" data-kpi="over"><div class="kpi-val">${over}</div><div class="kpi-lbl">Sur-allouées</div><div class="kpi-sub">utilisées + que possédées</div><div class="kpi-go">Corriger →</div></div>
+    </div>
+    <div class="kpi-grid">
+      <div class="kpi-card clickable" data-kpi="priciest"><div class="kpi-val" style="font-size:1.1rem;">${priciest ? escapeHtml(priciest.name_en) : '—'}</div><div class="kpi-lbl">Carte la plus chère</div><div class="kpi-sub">${priciest ? cardPrice(priciest).toFixed(2) + ' €' : ''}</div><div class="kpi-go">La voir →</div></div>
+      <div class="kpi-card"><div class="kpi-val">${avgValue.toFixed(2)} €</div><div class="kpi-lbl">Valeur moyenne</div><div class="kpi-sub">par exemplaire possédé</div></div>
+      <div class="kpi-card clickable" data-kpi="dupes"><div class="kpi-val">${duplicates}</div><div class="kpi-lbl">En plusieurs exemplaires</div><div class="kpi-sub">dont ${playsets} en playset (4+)</div><div class="kpi-go">Les voir →</div></div>
+      <div class="kpi-card clickable" data-kpi="indecks"><div class="kpi-val">${inDecksCopies}</div><div class="kpi-lbl">Cartes en deck</div><div class="kpi-sub">${storedCopies} rangée(s) en classeur/boîte</div><div class="kpi-go">Les voir →</div></div>
+      <div class="kpi-card clickable" data-kpi="completion"><div class="kpi-val">${globalPct}%</div><div class="kpi-lbl">Complétion catalogue</div><div class="kpi-sub">${owned.length}/${catalogNames} · ${setsRepresented} extensions</div><div class="kpi-go">Détail →</div></div>
     </div>
     <div class="dash-cols">
       <div class="dash-panel">
@@ -2834,6 +2981,10 @@ function renderDashboard() {
       else if (k === 'decks') switchCollTab('decks');
       else if (k === 'unplaced') gotoCards({ loc: '__none' });
       else if (k === 'over') gotoCards({ status: 'over' });
+      else if (k === 'priciest') { if (priciest) openLightbox(priciest.id); }
+      else if (k === 'dupes') gotoCards({ status: 'owned', sort: 'owned-desc' });
+      else if (k === 'indecks') gotoCards({ status: 'used' });
+      else if (k === 'completion') switchCollTab('sets');
     };
   });
   document.querySelectorAll('[data-kpirarity]').forEach(el => {
@@ -2843,6 +2994,82 @@ function renderDashboard() {
     el.onclick = () => gotoCards({ status: 'owned', set: el.dataset.kpiset });
   });
 }
+
+// ---------------- Onglet Extensions (complétion détaillée) ----------------
+const SET_ICONS = Object.fromEntries((PAST_SETS || []).map(s => [s.code, s.icon]));
+
+function renderSetsTab() {
+  const q = document.getElementById('sets-q').value.trim().toLowerCase();
+  const onlyOwned = document.getElementById('sets-only-owned').checked;
+  const sort = document.getElementById('sets-sort').value;
+
+  const bySet = {};
+  for (const c of CARDS) {
+    if (!bySet[c.set_code]) bySet[c.set_code] = { code: c.set_code, name: c.set_name, total: 0, owned: 0, copies: 0, value: 0, missingValue: 0 };
+    const s = bySet[c.set_code];
+    s.total++;
+    if (c.owned > 0) { s.owned++; s.copies += c.owned; s.value += cardPrice(c) * c.owned; }
+    else s.missingValue += cardPrice(c);
+  }
+  let list = Object.values(bySet);
+  if (onlyOwned) list = list.filter(s => s.owned > 0);
+  if (q) list = list.filter(s => s.name.toLowerCase().includes(q) || s.code.includes(q));
+  const cmp = {
+    'pct-desc': (a, b) => (b.owned / b.total) - (a.owned / a.total),
+    'pct-asc': (a, b) => (a.owned / a.total) - (b.owned / b.total),
+    'owned-desc': (a, b) => b.owned - a.owned,
+    'value-desc': (a, b) => b.value - a.value,
+    'name': (a, b) => a.name.localeCompare(b.name),
+    'size-desc': (a, b) => b.total - a.total,
+  }[sort];
+  if (cmp) list.sort(cmp);
+
+  const allTotal = Object.values(bySet).reduce((a, s) => a + s.total, 0);
+  const allOwned = Object.values(bySet).reduce((a, s) => a + s.owned, 0);
+  const completeSets = Object.values(bySet).filter(s => s.owned === s.total).length;
+  const owned0 = ownedUnique().length;
+
+  document.getElementById('sets-content').innerHTML = `
+    <div class="sets-summary">
+      <span><b>${allOwned}</b> / ${allTotal} emplacements d'extension remplis</span>
+      <span><b>${((allOwned / allTotal) * 100).toFixed(1)}%</b> de complétion</span>
+      <span><b>${completeSets}</b> extension(s) complétée(s)</span>
+      <span><b>${list.length}</b> affichée(s)</span>
+    </div>
+    <div class="lex-sub" style="margin:-6px 0 14px;">Ici on compte par extension : une carte rééditée dans 3 extensions remplit 3 emplacements. C'est pourquoi ce total diffère du « ${owned0} cartes différentes » de la vue d'ensemble.</div>
+    <div class="setcard-grid">
+      ${list.map(s => {
+        const pct = Math.round((s.owned / s.total) * 100);
+        return `<div class="setcard ${s.owned === s.total ? 'complete' : ''}" data-setcode="${s.code}">
+          <div class="sc-top">
+            ${SET_ICONS[s.code] ? `<img class="sc-icon" src="${SET_ICONS[s.code]}" alt="">` : '<span class="sc-icon">📦</span>'}
+            <div><div class="sc-name">${escapeHtml(s.name)}</div><div class="sc-code">${s.code}</div></div>
+            <div class="sc-pct">${pct}%</div>
+          </div>
+          <div class="sc-track"><div class="sc-fill" style="width:${pct}%"></div></div>
+          <div class="sc-stats">
+            <span><b>${s.owned}</b>/${s.total} cartes</span>
+            <span><b>${s.copies}</b> exemplaires</span>
+            <span>possédé : <b>${s.value.toFixed(0)} €</b></span>
+            <span>manque : ${s.missingValue.toFixed(0)} €</span>
+          </div>
+        </div>`;
+      }).join('') || '<div class="lex-empty">Aucune extension trouvée.</div>'}
+    </div>
+  `;
+  document.querySelectorAll('[data-setcode]').forEach(el => {
+    el.onclick = () => {
+      switchCollTab('cards');
+      document.getElementById('coll2-reset').click();
+      applyChecklistState('coll2-f-set', { include: [el.dataset.setcode] });
+      resetAndRenderColl2();
+    };
+  });
+}
+
+document.getElementById('sets-q').addEventListener('input', renderSetsTab);
+document.getElementById('sets-sort').addEventListener('change', renderSetsTab);
+document.getElementById('sets-only-owned').addEventListener('change', renderSetsTab);
 
 // ---------------- Onglet Emplacements ----------------
 const expandedLocs = new Set();
@@ -3010,6 +3237,7 @@ const COLL_TABS = {
   dash:  { btn: 'coll-tab-dash-btn',  view: 'coll-view-dash',  render: () => renderDashboard() },
   cards: { btn: 'coll-tab-cards-btn', view: 'coll-view-cards', render: () => resetAndRenderColl2() },
   decks: { btn: 'coll-tab-decks-btn', view: 'coll-view-decks', render: () => { renderDecksTabList(); renderDeckDetailView(); } },
+  sets:  { btn: 'coll-tab-sets-btn',  view: 'coll-view-sets',  render: () => renderSetsTab() },
   loc:   { btn: 'coll-tab-loc-btn',   view: 'coll-view-loc',   render: () => renderLocationsTab() },
 };
 
