@@ -8,4 +8,6 @@ Catalogue interactif de **toutes les cartes Magic jamais imprimées sur papier**
 
 **Vie privée** : aucune donnée personnelle n'est envoyée où que ce soit. Le bouton "Importer ma collection" traite ton export Moxfield entièrement dans ton navigateur (stocké en local uniquement) — personne d'autre ne peut voir ce que tu importes.
 
+**Lore des plans** : [lore_plans.html](lore_plans.html) (bouton 🗺️ dans l'en-tête) couvre 34 plans du Multivers — des mondes qui ont eu leur propre bloc d'extensions aux plans à peine évoqués dans une nouvelle. Chaque fiche a son lore, une carte schématique (simplifiée, non officielle), ses figures notables, et un lien direct vers ses cartes dans le catalogue. Une section dépliable explique les bases (plan, planeswalker, étincelle, Mending) pour qui découvre le lore de zéro.
+
 Ouvre [index.html](index.html) directement, ou visite la page hébergée.

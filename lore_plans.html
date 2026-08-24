@@ -1,0 +1,1039 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Les plans du Multivers — Lore Magic</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root {
+    --bg: #f5f6f8; --panel: #ffffff; --text: #1a1c20; --muted: #6b7280;
+    --border: #e2e4e9; --accent: #6d28d9; --accent-bg: #ede9fe; --chip: #eef0f4;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #16171b; --panel: #202127; --text: #eef0f4; --muted: #9aa0ac;
+      --border: #34363e; --accent: #a78bfa; --accent-bg: #2f2650; --chip: #2b2d34; }
+  }
+  :root[data-theme="dark"] { --bg: #16171b; --panel: #202127; --text: #eef0f4; --muted: #9aa0ac;
+    --border: #34363e; --accent: #a78bfa; --accent-bg: #2f2650; --chip: #2b2d34; }
+  :root[data-theme="light"] { --bg: #f5f6f8; --panel: #ffffff; --text: #1a1c20; --muted: #6b7280;
+    --border: #e2e4e9; --accent: #6d28d9; --accent-bg: #ede9fe; --chip: #eef0f4; }
+
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--text); font-family: -apple-system, "Segoe UI", Roboto, sans-serif; }
+  a { color: inherit; }
+
+  header { position:sticky; top:0; z-index:20; background:var(--panel); border-bottom:1px solid var(--border);
+    padding:14px 20px; display:flex; align-items:center; gap:14px; flex-wrap:wrap; }
+  header h1 { font-size:1.15rem; margin:0; }
+  header .sub { color:var(--muted); font-size:0.78rem; }
+  header .spacer { flex:1; }
+  #back-link { padding:8px 14px; border-radius:999px; border:1px solid var(--border); background:var(--panel);
+    color:var(--text); font-size:0.8rem; font-weight:600; text-decoration:none; }
+  #back-link:hover { border-color:var(--accent); color:var(--accent); }
+
+  .toolbar { position:sticky; top:57px; z-index:19; background:var(--bg); padding:12px 20px; border-bottom:1px solid var(--border);
+    display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+  #q { flex:1; min-width:220px; padding:9px 14px; border-radius:999px; border:1px solid var(--border);
+    background:var(--panel); color:var(--text); font-size:0.88rem; }
+  .era-chip { padding:7px 13px; border-radius:999px; border:1px solid var(--border); background:var(--panel);
+    color:var(--muted); font-size:0.78rem; font-weight:600; cursor:pointer; white-space:nowrap; }
+  .era-chip.active { background:var(--accent-bg); border-color:var(--accent); color:var(--accent); }
+  #count { padding:0 20px; color:var(--muted); font-size:0.78rem; margin-top:10px; }
+
+  .intro { margin:16px 20px 6px; padding:16px 18px; background:var(--panel); border:1px solid var(--border);
+    border-radius:12px; font-size:0.86rem; line-height:1.65; color:var(--text); }
+  .intro b { color:var(--accent); }
+  .lore101 { margin-top:14px; border-top:1px solid var(--border); padding-top:14px; }
+  .lore101 summary { cursor:pointer; font-weight:700; color:var(--accent); font-size:0.88rem; list-style:none; }
+  .lore101 summary::-webkit-details-marker { display:none; }
+  .lore101 summary::before { content:'▸ '; }
+  .lore101[open] summary::before { content:'▾ '; }
+  .lore101 summary:hover { text-decoration:underline; }
+  .lore101 h4 { font-size:0.72rem; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); margin:18px 0 8px; }
+  .lore101 h4:first-of-type { margin-top:16px; }
+  .lore101 p { line-height:1.7; font-size:0.87rem; margin:0 0 10px; }
+
+  .grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(230px, 1fr)); gap:12px; padding:14px 20px 40px; }
+  .p-card { background:var(--panel); border:1px solid var(--border); border-radius:12px; padding:14px 16px; cursor:pointer;
+    transition: border-color .12s, transform .12s; }
+  .p-card:hover { border-color:var(--accent); transform:translateY(-2px); }
+  .p-card .icon { font-size:1.5rem; }
+  .p-card h3 { margin:8px 0 2px; font-size:1rem; }
+  .p-card .aka { color:var(--muted); font-size:0.72rem; margin-bottom:6px; }
+  .p-card .tagline { font-size:0.8rem; color:var(--text); line-height:1.4; min-height:2.6em; }
+  .p-card .meta-row { display:flex; gap:5px; margin-top:10px; flex-wrap:wrap; align-items:center; }
+  .mana { display:inline-flex; align-items:center; justify-content:center; width:17px; height:17px; border-radius:50%;
+    font-size:0.6rem; font-weight:800; color:#000; flex-shrink:0; }
+  .mana.W { background:#f8f6d8; } .mana.U { background:#aed4f4; } .mana.B { background:#c9c2bd; color:#fff; }
+  .mana.R { background:#f4b28c; } .mana.G { background:#a3c9a1; } .mana.C { background:#cfd3d6; }
+  .era-tag { font-size:0.65rem; padding:2px 8px; border-radius:999px; background:var(--chip); color:var(--muted); font-weight:700; text-transform:uppercase; letter-spacing:.03em; }
+  .no-set-tag { font-size:0.65rem; padding:2px 8px; border-radius:999px; background:rgba(220,38,38,.1); color:#dc2626; font-weight:700; }
+
+  .overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.55); z-index:90; align-items:flex-start; justify-content:center; padding:30px 16px; overflow-y:auto; }
+  .overlay.open { display:flex; }
+  .detail { background:var(--panel); border-radius:16px; max-width:820px; width:100%; padding:0; margin-bottom:40px; }
+  .detail-head { padding:22px 26px 16px; border-bottom:1px solid var(--border); position:relative; }
+  .detail-head .close-x { position:absolute; top:16px; right:18px; background:none; border:none; font-size:1.3rem; cursor:pointer; color:var(--muted); }
+  .detail-head .close-x:hover { color:var(--text); }
+  .detail-head .icon { font-size:2.2rem; }
+  .detail-head h2 { margin:8px 0 2px; font-size:1.4rem; }
+  .detail-head .aka { color:var(--muted); font-size:0.82rem; }
+  .detail-head .tags { margin-top:10px; display:flex; gap:6px; flex-wrap:wrap; }
+  .detail-body { padding:20px 26px 26px; }
+  .detail-body h4 { font-size:0.72rem; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); margin:22px 0 8px; }
+  .detail-body h4:first-child { margin-top:0; }
+  .detail-body p { line-height:1.7; font-size:0.92rem; margin:0 0 12px; }
+  .region-list { display:grid; grid-template-columns:1fr 1fr; gap:8px 16px; }
+  .region-list div b { font-size:0.85rem; }
+  .region-list div span { display:block; color:var(--muted); font-size:0.78rem; line-height:1.4; }
+  .chip-row { display:flex; flex-wrap:wrap; gap:6px; }
+  .chip-row .chip { background:var(--chip); border-radius:999px; padding:5px 11px; font-size:0.78rem; }
+  .set-row { display:flex; justify-content:space-between; align-items:center; padding:6px 0; border-bottom:1px solid var(--border); font-size:0.82rem; }
+  .set-row:last-child { border-bottom:none; }
+  .set-row .yr { color:var(--muted); font-size:0.74rem; }
+  .catalog-link { display:inline-block; margin-top:4px; padding:5px 11px; border-radius:999px; background:var(--accent-bg);
+    color:var(--accent); font-size:0.72rem; font-weight:700; text-decoration:none; }
+  .catalog-link:hover { background:var(--accent); color:#fff; }
+  .map-note { color:var(--muted); font-size:0.76rem; margin-top:8px; font-style:italic; }
+  .map-svg { width:100%; height:auto; background:var(--chip); border-radius:10px; }
+  .empty-map { padding:30px; text-align:center; color:var(--muted); font-size:0.82rem; background:var(--chip); border-radius:10px; }
+  .no-results { padding:60px 20px; text-align:center; color:var(--muted); }
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>🗺️ Les plans du Multivers</h1>
+    <div class="sub">Géographie et lore des mondes de Magic — plans majeurs, mineurs, et tout ce qui les relie</div>
+  </div>
+  <div class="spacer"></div>
+  <a id="back-link" href="catalogue_cartes.html">← Retour au catalogue</a>
+</header>
+
+<div class="intro" id="intro">
+  <p>Cette page rassemble <b id="plane-total"></b> plans du Multivers de Magic — des mondes qui ont eu leur
+  propre bloc d'extensions aux plans à peine évoqués dans une nouvelle ou le dos d'un vieux booster. Les cartes
+  affichées dans chaque fiche sont des <b>schémas simplifiés</b>, pas des cartographies officielles : elles
+  servent de repère, pas de référence exacte. Utilise la recherche pour trouver un plan par nom, son surnom, ou
+  même un personnage qui y est né.</p>
+  <details class="lore101" open>
+    <summary>📖 Tu découvres le lore de zéro ? Commence ici — plan, planeswalker, étincelle...</summary>
+
+    <h4>Le Multivers</h4>
+    <p>Magic ne se passe pas sur une seule planète : il y a un nombre incalculable de mondes séparés, appelés
+    des <b>plans</b>. Chaque plan est cohérent en lui-même — sa géographie, ses peuples, ses lois de la magie,
+    parfois même les règles de la physique y sont différentes — mais un plan est complètement coupé des
+    autres. Un habitant normal de Ravnica ne peut pas se rendre sur Zendikar : il n'y a ni bateau ni portail
+    qui relie les plans entre eux dans la vie de tous les jours.</p>
+    <p>Entre les plans, il n'y a rien : le vide, qu'on appelle les <b>Éternités Bleues</b> (<i>Blind
+    Eternities</i>). Un humain ordinaire qui s'y retrouve exposé sans protection meurt quasi instantanément —
+    ce n'est pas un espace traversable normalement.</p>
+
+    <h4>Le planeswalker</h4>
+    <p>C'est là qu'intervient le concept central du lore : certains individus, très rares, naissent avec une
+    <b>étincelle</b> (<i>spark</i>) — une capacité innée qui leur permet de traverser les Éternités Bleues et
+    de se téléporter d'un plan à un autre, à volonté, sans mourir. Ces individus sont des
+    <b>planeswalkers</b>.</p>
+    <p>Deux précisions qui évitent des confusions fréquentes : <b>ce n'est pas un pouvoir qu'on apprend</b> —
+    soit on naît avec l'étincelle, soit non. Elle s'« ignite » en général lors d'un moment de crise extrême
+    (danger de mort, choc émotionnel violent), souvent à l'adolescence et de façon incontrôlée la première
+    fois. Et <b>ça n'a rien à voir avec être puissant en magie</b> : un planeswalker peut très bien être un
+    mage médiocre, l'étincelle est un talent à part, indépendant de la maîtrise magique — même si en pratique
+    beaucoup de planeswalkers sont aussi de grands mages, parce que sillonner le multivers les expose à
+    énormément de savoir. C'est pour ça qu'une carte Planeswalker représente toujours un
+    <b>personnage précis et nommé</b> (Jace, Chandra, Nissa...), jamais une créature générique : l'étincelle
+    est individuelle, pas une classe de personnage.</p>
+
+    <h4>Le tournant de 2007 : la Mending</h4>
+    <p>Dans le lore ancien (avant 2008 environ), les planeswalkers sont présentés comme quasi tout-puissants
+    sur leur plan d'origine — Urza pouvait littéralement remodeler des continents. Un événement appelé la
+    <b>Mending</b>, à la fin de la Saga Weatherlight, a changé cette règle : les planeswalkers sont devenus
+    mortels, vulnérables, et leur étincelle beaucoup moins écrasante. C'est ce changement qui a rendu possible
+    le type de carte Planeswalker moderne (introduit en 2008 avec <i>Shards of Alara</i>) : avant, un
+    personnage de ce calibre aurait été trop déséquilibré pour être une carte jouable. C'est pour ça que
+    chaque fiche ci-dessous porte une étiquette d'ère : <i>lore ancien</i> (avant les blocs), <i>ère des
+    blocs</i> (2003-2007, un plan = un bloc de sets, avant la Mending), <i>ère planeswalker</i>
+    (2008-aujourd'hui).</p>
+
+    <h4>Comment ça se répercute dans le jeu</h4>
+    <p><b>Un plan = souvent un bloc de sets.</b> Quand tu vois « Ravnica » ou « Innistrad » comme nom
+    d'extension, c'est littéralement le plan que tu visites le temps de ce set. <b>Les couleurs de mana ont un
+    sens narratif, pas juste mécanique</b> : un plan a souvent une identité de couleurs (les guildes de
+    Ravnica sont associées chacune à deux couleurs, les clans de Tarkir aussi) — ce n'est pas arbitraire, ça
+    reflète la culture ou la magie de cette société. Et <b>les cartes Planeswalker que tu joues sont ces
+    personnages en visite</b> : quand tu joues une carte Jace, tu incarnes un individu qui, dans le lore, est
+    en train de voyager à travers le multivers — souvent sur un plan qui n'est même pas le sien.</p>
+  </details>
+</div>
+
+<div class="toolbar">
+  <input type="text" id="q" placeholder="Chercher un plan, un surnom, un planeswalker, une extension...">
+  <button class="era-chip active" data-era="">Tous</button>
+  <button class="era-chip" data-era="bloc">Ère des blocs (2003-2007)</button>
+  <button class="era-chip" data-era="moderne">Ère planeswalker (2008-auj.)</button>
+  <button class="era-chip" data-era="ancien">Lore ancien / pré-bloc</button>
+</div>
+<div id="count"></div>
+<div class="grid" id="grid"></div>
+
+<div class="overlay" id="detail-overlay">
+  <div class="detail" id="detail-content"></div>
+</div>
+
+<script>
+// ============================================================================
+// Données : chaque plan est un schéma, pas une fiche exhaustive. Le multivers
+// de Magic a 30 ans de lore répartis dans des centaines de romans, nouvelles
+// et textes de carte -- ce fichier vise à donner des repères sûrs, pas à
+// remplacer un wiki. Les plans "sans extension dédiée" (noSet) n'ont jamais eu
+// de bloc à leur nom : ce qu'on en sait vient de mentions éparses.
+//
+// region.x/y/r sont des coordonnées SCHÉMATIQUES (repère 0-100), pas une
+// cartographie officielle -- voir la note affichée sous chaque carte.
+// ============================================================================
+const PLANES = [
+
+// ---------------------------------------------------------------- DOMINARIA
+{
+  id: 'dominaria', name: 'Dominaria', icon: '🏰', era: 'ancien',
+  colors: [],
+  tagline: "Le plus vieux plan connu du jeu, théâtre de la majorité des trente premières années de Magic.",
+  summary: [
+    "Dominaria est le plan sur lequel le tout premier set de Magic (1993) a implicitement posé son décor, avant même que le mot « plan » n'existe dans le jeu. Continent après continent — Terisiare pris par les glaces, Jamuraa tropicale, l'archipel de Shiv aux dragons, l'empire englouti de Corondor — il a accumulé plus de trente ans d'histoire : la Guerre Fratricide entre les artificiers Urza et Mishra, l'Invasion Phyrexiane menée par Yawgmoth, la Saga Weatherlight, et plus récemment l'invasion de la Phyrexia moderne pendant le cycle « March of the Machine ».",
+    "C'est aussi le plan où la notion même de planeswalker a été inventée dans la fiction : Urza et Mishra portaient déjà l'étincelle des millénaires avant que les cartes Planeswalker n'existent. Après la Mending, Dominaria reste un point de passage central du multivers, régulièrement revisité (Dominaria 2018, Dominaria United 2022, The Brothers' War 2022) pour boucler des arcs commencés des décennies plus tôt."
+  ],
+  regions: [
+    { name: 'Terisiare', blurb: "Continent nordique ravagé par un age glaciaire ; Ice Age, Alliances, Coldsnap s'y déroulent.", x: 30, y: 20, r: 15 },
+    { name: 'Jamuraa', blurb: "Savanes et jungles tropicales, terre des tribus animales et de Zhalfir.", x: 60, y: 55, r: 14 },
+    { name: 'Shiv', blurb: "Archipel volcanique peuplé de gobelins et de dragons rouges.", x: 82, y: 30, r: 10 },
+    { name: 'Otaria', blurb: "Continent isolé du reste de Dominaria, théâtre du bloc Odyssey/Onslaught.", x: 40, y: 78, r: 13 },
+    { name: 'Urborg', blurb: "Marécage maudit, ancien siège du pouvoir de Lord Belzenlok puis de Liliana Vess.", x: 55, y: 75, r: 8 },
+    { name: 'Benalia / Argive', blurb: "Royaumes chevaleresques, cœur politique du set Dominaria (2018).", x: 45, y: 35, r: 9 },
+  ],
+  notable: ["Urza", "Mishra", "Yawgmoth", "Gerrard Capashen", "Karn"],
+  planeswalkers: ["Urza", "Mishra", "Serra", "Jaya Ballard", "Teferi", "Liliana Vess", "Karn (créé, pas né)"],
+  sets: [
+    { name: 'Alpha / Arabian Nights / Antiquities', year: '1993-94' },
+    { name: 'Ice Age · Alliances · Coldsnap', year: '1995-2006', code: 'ice' },
+    { name: "Tempest · Stronghold · Exodus (cycle Rath)", year: '1997-98', code: 'tmp' },
+    { name: "Urza's Saga · Legacy · Destiny", year: '1998-99', code: 'usg' },
+    { name: 'Invasion · Planeshift · Apocalypse', year: '2000-01', code: 'inv' },
+    { name: 'Odyssey · Torment · Judgment', year: '2001-02', code: 'ody' },
+    { name: 'Onslaught · Legions · Scourge', year: '2002-03', code: 'ons' },
+    { name: 'Time Spiral · Planar Chaos · Future Sight', year: '2006-07', code: 'tsp' },
+    { name: 'Dominaria', year: '2018', code: 'dom' },
+    { name: 'Dominaria United', year: '2022', code: 'dmu' },
+    { name: "The Brothers' War", year: '2022', code: 'bro' },
+  ],
+},
+
+// ------------------------------------------------------------------- MIRRODIN
+{
+  id: 'mirrodin', name: 'Mirrodin', aka: 'New Phyrexia (après corruption)', icon: '⚙️', era: 'bloc',
+  colors: [],
+  tagline: "Un plan entièrement métallique créé par Karn, envahi par les Phyrexians et rebaptisé New Phyrexia.",
+  summary: [
+    "Mirrodin est un monde artificiel : sol de métal, arbres de cuivre, lunes de bronze, forgé par le planeswalker-artificier Karn comme le plan « parfait ». Cinq grandes forces (les cinq soleils, associés aux couleurs de mana) façonnent ses factions. Le bloc Scars of Mirrodin raconte l'infection du plan par une souche de Phyrexians importée involontairement par Karn lui-même — le mal qu'il pensait avoir laissé derrière lui sur Dominaria.",
+    "New Phyrexia (2011) marque la victoire de l'infection : le plan est rebaptisé, ses habitants assimilés ou exterminés, et il devient l'un des bastions phyrexians qui serviront de base à l'invasion multiversale de March of the Machine (2023)."
+  ],
+  regions: [
+    { name: 'Le Cœur d’Argent', blurb: "Zone centrale, la plus ancienne, où Karn a forgé le plan.", x: 50, y: 50, r: 10 },
+    { name: 'Taiga de Cuivre', blurb: "Forêts métalliques, territoire des Vulshok et des Elfes Nim.", x: 30, y: 30, r: 12 },
+    { name: 'Marais de Rouille', blurb: "Zone corrosive à l'ouest, propice aux nécro-goules.", x: 20, y: 65, r: 11 },
+    { name: 'Mont Étincelle', blurb: "Volcan de métal en fusion, territoire gobelin.", x: 75, y: 25, r: 9 },
+    { name: 'Le Grand Fourneau (Tel-Jilad)', blurb: "Forêt-labyrinthe, résistance elfique contre les Phyrexians.", x: 65, y: 68, r: 10 },
+  ],
+  notable: ["Memnarch", "Glissa Sunslayer", "Norn (Elesh Norn, Grand Cenobite)"],
+  planeswalkers: ["Karn (créateur du plan)", "Venser"],
+  sets: [
+    { name: 'Mirrodin · Darksteel · Fifth Dawn', year: '2003-04', code: 'mrd' },
+    { name: 'Scars of Mirrodin · Mirrodin Besieged', year: '2010-11', code: 'som' },
+    { name: 'New Phyrexia', year: '2011', code: 'nph' },
+  ],
+},
+
+// ----------------------------------------------------------------- KAMIGAWA
+{
+  id: 'kamigawa', name: 'Kamigawa', icon: '⛩️', era: 'bloc',
+  colors: ['W','U','B','R','G'],
+  tagline: "Monde inspiré du Japon féodal, où kami (esprits) et mortels se sont autrefois affrontés — puis d'un futur cyberpunk du même plan.",
+  summary: [
+    "Kamigawa est peuplé de kami — des esprits qui habitent chaque plante, pierre et rivière — et de mortels vivant sous leur regard. Le premier bloc (Champions/Betrayers/Saviors of Kamigawa, 2004-05) raconte la Guerre Kami : après qu'un daimyo mortel a volé un artefact sacré, la barrière entre le monde spirituel et le monde physique se fissure, déclenchant un conflit ravageur entre kami et humains.",
+    "Kamigawa: Neon Dynasty (2022) revisite le même plan mille ans plus tard, devenu une mégalopole cyberpunk (Towashi) où technologie, néons et kami cohabitent tant bien que mal sous la coupe de la planeswalker Tamiyo et de l'IA Jin-Gitaxias."
+  ],
+  regions: [
+    { name: 'Towashi', blurb: "Mégalopole cyberpunk, capitale de l'ère moderne (Neon Dynasty).", x: 50, y: 40, r: 12 },
+    { name: 'Forêt de Jukai', blurb: "Forêt ancienne peuplée d'esprits, cœur du bloc originel.", x: 25, y: 55, r: 13 },
+    { name: 'Mont Fuji-esque (Takenuma marais)', blurb: "Marais hanté par les morts-vivants et les kami du deuil.", x: 65, y: 65, r: 10 },
+    { name: 'Eiganjo', blurb: "Château impérial, siège du pouvoir mortel.", x: 45, y: 20, r: 8 },
+  ],
+  notable: ["Konda, Lord of Eiganjo", "Toshiro Umezawa", "The Myojin (avatars-kami)"],
+  planeswalkers: ["Tamiyo", "Nahiri (de passage)"],
+  sets: [
+    { name: 'Champions · Betrayers · Saviors of Kamigawa', year: '2004-05', code: 'chk' },
+    { name: 'Kamigawa: Neon Dynasty', year: '2022', code: 'neo' },
+  ],
+},
+
+// ------------------------------------------------------------------- RAVNICA
+{
+  id: 'ravnica', name: 'Ravnica', icon: '🏙️', era: 'bloc',
+  colors: ['W','U','B','R','G'],
+  tagline: "Plan entièrement recouvert par une seule ville-monde, divisée en dix guildes.",
+  summary: [
+    "Ravnica n'a plus de nature sauvage : sa surface entière est une cité tentaculaire construite depuis des millénaires, structurée par dix guildes qui se partagent le pouvoir (et la couleur de mana associée à chaque paire). Selesnya prône l'harmonie communautaire, Dimir complote dans l'ombre, Boros impose l'ordre martial, Golgari recycle la mort en vie, Izzet expérimente sans retenue — et ainsi de suite pour les dix.",
+    "Le plan a été visité par trois blocs distincts (Ravnica: City of Guilds 2005, Return to Ravnica 2012, Guilds of Ravnica 2018) qui explorent chacun deux ou dix guildes, avant de servir de champ de bataille final à War of the Spark (2019), où Nicol Bolas tente de récolter les étincelles de tous les planeswalkers réunis pour l'arrêter. Murders at Karlov Manor (2024) y ramène une intrigue policière."
+  ],
+  regions: [
+    { name: 'Nivix (Izzet)', blurb: "Tours-laboratoires électriques du quartier Izzet.", x: 60, y: 20, r: 9 },
+    { name: 'Vitu-Ghazi (Selesnya)', blurb: "Arbre-cité vivant, cœur du quartier Selesnya.", x: 25, y: 35, r: 10 },
+    { name: 'Undercity (Dimir/Golgari)', blurb: "Réseau de catacombes sous la ville, territoire Dimir et Golgari.", x: 40, y: 75, r: 13 },
+    { name: 'Sunhome (Boros)', blurb: "Forteresse-garnison Boros, ordre martial.", x: 75, y: 45, r: 8 },
+    { name: 'Orzhova (Orzhov)', blurb: "Cathédrale-banque du syndicat Orzhov.", x: 50, y: 55, r: 8 },
+  ],
+  notable: ["Niv-Mizzet (dragon-parangon Izzet)", "Les dix Guildmasters", "Teysa Karlov"],
+  planeswalkers: ["Jace Beleren (revisité)", "Ral Zarek", "Vraska", "Dovin Baan", "Kaya"],
+  sets: [
+    { name: 'Ravnica: City of Guilds · Guildpact · Dissension', year: '2005-06', code: 'rav' },
+    { name: 'Return to Ravnica · Gatecrash · Dragon\'s Maze', year: '2012-13', code: 'rtr' },
+    { name: 'Guilds of Ravnica · Ravnica Allegiance', year: '2018-19', code: 'grn' },
+    { name: 'War of the Spark', year: '2019', code: 'war' },
+    { name: 'Murders at Karlov Manor', year: '2024', code: 'mkm' },
+  ],
+},
+
+// -------------------------------------------------------------- LORWYN/SHADOWMOOR
+{
+  id: 'lorwyn', name: 'Lorwyn', aka: 'Shadowmoor (visage sombre du même plan)', icon: '🍄', era: 'bloc',
+  colors: ['W','U','B','R','G'],
+  tagline: "Un plan féerique dont le visage bascule entre lumière pastorale et cauchemar gothique tous les 300 ans.",
+  summary: [
+    "Lorwyn ressemble à un conte de fées lumineux : farfadets facétieux, kithkin en communautés villageoises, treefolk paisibles, elfes d'une beauté cruelle. Mais le plan est soumis à un « Grand Renouveau » cyclique : tous les trois siècles, il bascule entièrement dans sa face sombre, Shadowmoor, où les mêmes créatures deviennent monstrueuses et où la lumière du soleil devient littéralement toxique.",
+    "Le bloc Lorwyn (2007) explore la face lumineuse, Shadowmoor (2008) la face sombre — mêmes peuples, mêmes lieux, inversés. C'est aussi le tout premier bloc à avoir introduit les cartes Planeswalker modernes sous leur forme actuelle."
+  ],
+  regions: [
+    { name: 'Kinsbaile', blurb: "Village kithkin, cœur communautaire de la face lumineuse.", x: 35, y: 40, r: 9 },
+    { name: 'Forêt de Wanderwine', blurb: "Bois hanté par les farfadets et les Faeries.", x: 55, y: 30, r: 10 },
+    { name: 'Le Murque (Shadowmoor)', blurb: "Version corrompue des mêmes bois, sombre et hostile.", x: 55, y: 30, r: 10 },
+    { name: 'Highvale', blurb: "Cité perchée des géants-nuages.", x: 70, y: 55, r: 8 },
+  ],
+  notable: ["Brigid Baeli", "Maralen of the Mornsong", "Doran the Siege Tower"],
+  planeswalkers: [],
+  sets: [
+    { name: 'Lorwyn · Morningtide', year: '2007', code: 'lrw' },
+    { name: 'Shadowmoor · Eventide', year: '2008', code: 'shm' },
+  ],
+},
+
+// ---------------------------------------------------------------------- ALARA
+{
+  id: 'alara', name: 'Alara', icon: '💎', era: 'moderne',
+  colors: ['W','U','B','R','G'],
+  tagline: "Un plan brisé en cinq « éclats » (shards) isolés pendant des millénaires, chacun dominé par trois couleurs.",
+  summary: [
+    "Il y a des millénaires, une bataille magique a fracturé Alara en cinq éclats — Bant, Esper, Grixis, Jund, Naya — chacun coupé des deux couleurs de mana restantes, ce qui a permis à chaque société de développer une identité extrême : l'ordre chevaleresque de Bant (blanc/bleu/vert), l'artifice froid d'Esper (blanc/bleu/noir), la nécromancie de Grixis (bleu/noir/rouge), le carnage de Jund (noir/rouge/vert), la démesure primale de Naya (rouge/vert/blanc).",
+    "Le bloc (Shards of Alara → Conflux → Alara Reborn, 2008-09) raconte la réunification forcée des éclats par le dragon planeswalker Nicol Bolas, qui cherche à s'en servir comme rituel de résurrection personnelle."
+  ],
+  regions: [
+    { name: 'Bant', blurb: "Chevalerie et méritocratie angélique (W/U/G).", x: 30, y: 25, r: 12 },
+    { name: 'Esper', blurb: "Cité de cristal et d'artifice froid (W/U/B).", x: 65, y: 20, r: 11 },
+    { name: 'Grixis', blurb: "Terre dévastée par la nécromancie (U/B/R).", x: 75, y: 55, r: 11 },
+    { name: 'Jund', blurb: "Jungle volcanique dominée par les dragons (B/R/G).", x: 45, y: 70, r: 12 },
+    { name: 'Naya', blurb: "Savane démesurée, créatures géantes (R/G/W).", x: 20, y: 55, r: 12 },
+  ],
+  notable: ["Nicol Bolas", "Sharuum the Hegemon", "Progenitus"],
+  planeswalkers: ["Ajani Goldmane", "Elspeth Tirel", "Sarkhan Vol"],
+  sets: [
+    { name: 'Shards of Alara · Conflux · Alara Reborn', year: '2008-09', code: 'ala' },
+  ],
+},
+
+// -------------------------------------------------------------------- ZENDIKAR
+{
+  id: 'zendikar', name: 'Zendikar', icon: '🗿', era: 'moderne',
+  colors: ['W','U','B','R','G'],
+  tagline: "Monde d'aventure hostile, truffé de hedrons de pierre — les scellés d'une prison pour titans Eldrazi.",
+  summary: [
+    "Zendikar attire chasseurs de trésors et explorateurs du multivers entier : failles magiques, montagnes flottantes, hedrons taillés par une civilisation disparue. Ces hedrons ne sont pas décoratifs — ce sont les verrous d'une prison millénaire retenant trois titans Eldrazi (Ulamog, Kozilek, Emrakul), des entités dévoreuses de mondes venues d'au-delà du Multivers.",
+    "Rise of the Eldrazi (2010) marque leur libération accidentelle par la planeswalker Sorin Markov et ses alliés. Battle for Zendikar/Oath of the Gatewatch (2015-16) racontent la contre-offensive du tout nouveau « Gatewatch » pour reprendre le contrôle du plan face à un Ulamog en pleine dévastation."
+  ],
+  regions: [
+    { name: 'Akoum', blurb: "Terres volcaniques, épicentre de la libération des Eldrazi.", x: 30, y: 25, r: 12 },
+    { name: 'Tazeem', blurb: "Falaises et cités suspendues, capitale Sea Gate.", x: 60, y: 20, r: 10 },
+    { name: 'Bala Ged', blurb: "Jungle luxuriante, dévastée par Ulamog.", x: 65, y: 60, r: 12 },
+    { name: 'Guul Draz', blurb: "Marécage vampirique, fief de Sorin Markov.", x: 35, y: 65, r: 10 },
+    { name: 'Murasa', blurb: "Îles flottantes et canyons, terre des dinosaures.", x: 50, y: 45, r: 9 },
+  ],
+  notable: ["Ulamog, Kozilek, Emrakul (les titans Eldrazi)", "Drana", "Anowon"],
+  planeswalkers: ["Nissa Revane", "Sorin Markov (créateur d'une partie des hedrons)"],
+  sets: [
+    { name: 'Zendikar · Worldwake · Rise of the Eldrazi', year: '2009-10', code: 'zen' },
+    { name: 'Battle for Zendikar · Oath of the Gatewatch', year: '2015-16', code: 'bfz' },
+    { name: 'Zendikar Rising', year: '2020', code: 'znr' },
+  ],
+},
+
+// ------------------------------------------------------------------ INNISTRAD
+{
+  id: 'innistrad', name: 'Innistrad', icon: '🦇', era: 'moderne',
+  colors: ['W','U','B','R','G'],
+  tagline: "Plan gothique-horrifique créé en partie par un archange pour contenir les morts-vivants — jusqu'à ce que ça tourne mal.",
+  summary: [
+    "Innistrad est un plan de brumes, de villages fortifiés et de cathédrales gothiques, où humains, vampires, loups-garous, zombies et esprits coexistent dans une tension permanente. L'archange Avacyn y a été littéralement créée par le planeswalker Sorin Markov pour protéger les humains — un pacte qui vole en éclats dans Shadows over Innistrad (2016) quand Avacyn sombre dans la folie et qu'Emrakul, un titan Eldrazi, s'invite sur le plan.",
+    "Midnight Hunt et Crimson Vow (2021) referment cet arc avec le retour d'un semblant d'équilibre, autour d'un mariage vampirique de circonstance entre deux familles rivales."
+  ],
+  regions: [
+    { name: 'Gavony', blurb: "Bastion humain fortifié, foi en Avacyn.", x: 30, y: 30, r: 10 },
+    { name: 'Kessig', blurb: "Forêts sauvages, territoire des loups-garous.", x: 60, y: 25, r: 11 },
+    { name: 'Nephalia', blurb: "Côtes brumeuses hantées par les esprits et zombies.", x: 55, y: 55, r: 10 },
+    { name: 'Stensia', blurb: "Terres vampiriques gothiques, château des Voldaren/Markov.", x: 75, y: 45, r: 9 },
+    { name: 'Ulvenwald', blurb: "Forêt primitive et sauvage au centre du plan.", x: 45, y: 42, r: 8 },
+  ],
+  notable: ["Avacyn", "Griselbrand (démon)", "Olivia Voldaren"],
+  planeswalkers: ["Sorin Markov (co-créateur d'Avacyn)", "Arlinn Kord"],
+  sets: [
+    { name: 'Innistrad · Dark Ascension', year: '2011-12', code: 'isd' },
+    { name: 'Shadows over Innistrad · Eldritch Moon', year: '2016', code: 'soi' },
+    { name: 'Innistrad: Midnight Hunt · Crimson Vow', year: '2021', code: 'mid' },
+  ],
+},
+
+// -------------------------------------------------------------------- THEROS
+{
+  id: 'theros', name: 'Theros', icon: '⚡', era: 'moderne',
+  colors: ['W','U','B','R','G'],
+  tagline: "Plan de mythologie grecque où les dieux sont bien réels, marchent parmi les mortels, et où les héros gagnent une place aux cieux.",
+  summary: [
+    "Theros fonctionne comme un plan mythologique au sens propre : les dieux (Héliod, Purphoros, Nylea, Erebos, Thassa, Klothys, Athreos...) existent réellement, exigent des dévotions concrètes et interviennent directement dans les affaires mortelles. Les héros les plus valeureux peuvent gagner l'immortalité en devenant des constellations. En dessous, l'Underworld régi par Erebos retient les âmes des morts, sauf exception rarissime.",
+    "Theros Beyond Death (2020) explore justement une de ces exceptions : la planeswalker Elspeth, tuée sur le plan des années plus tôt, tente d'en revenir en traversant l'Underworld."
+  ],
+  regions: [
+    { name: 'Meletis', blurb: "Cité-État de la sagesse et de la loi, dévouée à Héliod/Thassa.", x: 35, y: 25, r: 9 },
+    { name: 'Akros', blurb: "Cité-État martiale et guerrière.", x: 65, y: 30, r: 9 },
+    { name: 'Setessa', blurb: "Cité-État des Amazones, dévouée à Nylea.", x: 50, y: 55, r: 8 },
+    { name: 'Underworld', blurb: "Royaume souterrain des morts, gouverné par Erebos.", x: 50, y: 82, r: 12 },
+    { name: 'Nyx', blurb: "Le ciel étoilé où résident les dieux entre deux interventions.", x: 50, y: 8, r: 10 },
+  ],
+  notable: ["Héliod", "Purphoros", "Erebos", "Xenagos (satyre devenu dieu)"],
+  planeswalkers: ["Elspeth Tirel", "Ajani (de passage)", "Xenagos"],
+  sets: [
+    { name: 'Theros · Born of the Gods · Journey into Nyx', year: '2013-14', code: 'ths' },
+    { name: 'Theros Beyond Death', year: '2020', code: 'thb' },
+  ],
+},
+
+// ------------------------------------------------------------------- TARKIR
+{
+  id: 'tarkir', name: 'Tarkir', icon: '🐉', era: 'moderne',
+  colors: ['W','U','B','R','G'],
+  tagline: "Monde de clans nomades façonné par les dragons — ou sans eux, selon la ligne temporelle qu'on visite.",
+  summary: [
+    "Tarkir est structuré autour de cinq clans de deux couleurs chacun (Abzan, Jeskai, Sultai, Mardu, Temur), hérités d'un passé où les dragons ont été presque exterminés par le khan Yasova puis le seigneur-dragon Ugin. Le bloc Khans of Tarkir (2014-15) explore justement cette ligne temporelle « sans dragons », dominée par les clans humains.",
+    "Sarkhan Vol, planeswalker originaire de Tarkir, retourne dans le passé et empêche accidentellement la quasi-extinction des dragons : Dragons of Tarkir (2015) montre la timeline alternative où les Dragonlords (un dragon par clan) ont pris le pouvoir. Tarkir: Dragonstorm (2025) revient sur ce plan pour une nouvelle intrigue autour d'Ugin et des tempêtes de dragons."
+  ],
+  regions: [
+    { name: 'Abzan (W/B/G)', blurb: "Steppes arides, clans à la discipline de fer, cimetières-forteresses.", x: 25, y: 60, r: 10 },
+    { name: 'Jeskai (U/R/W)', blurb: "Montagnes et monastères, moines-guerriers élémentalistes.", x: 60, y: 20, r: 10 },
+    { name: 'Sultai (B/G/U)', blurb: "Marécages et jungles, nécromancie et accumulation de richesses.", x: 70, y: 55, r: 10 },
+    { name: 'Mardu (R/W/B)', blurb: "Plaines balayées par les hordes à cheval.", x: 35, y: 30, r: 9 },
+    { name: 'Temur (G/U/R)', blurb: "Toundra frontalière, chasseurs alliés aux bêtes géantes.", x: 45, y: 75, r: 9 },
+  ],
+  notable: ["Ugin (créateur indirect du plan)", "Yasova Dragonclaw", "Les cinq Khans / Dragonlords"],
+  planeswalkers: ["Sarkhan Vol", "Ugin"],
+  sets: [
+    { name: 'Khans of Tarkir · Fate Reforged · Dragons of Tarkir', year: '2014-15', code: 'ktk' },
+    { name: 'Tarkir: Dragonstorm', year: '2025' },
+  ],
+},
+
+// ------------------------------------------------------------------ KALADESH
+{
+  id: 'kaladesh', name: 'Kaladesh', icon: '🔧', era: 'moderne',
+  colors: ['W','U','B','R','G'],
+  tagline: "Plan steampunk voué à l'artifice et à l'inventivité, gouverné par un consulat qui censure les inventions jugées trop dangereuses.",
+  summary: [
+    "Kaladesh célèbre l'ingéniosité : ses habitants construisent des automates volants alimentés à l'éther, rivalisent lors de compétitions d'inventeurs (les Grands Aether Games), et vénèrent le progrès technologique. Sous ce vernis flamboyant, le Consulat contrôle strictement quelles inventions ont le droit d'exister — ce qui pousse l'inventrice Chandra Nalaar (native du plan) et Pia Nalaar, sa mère, en conflit ouvert avec le pouvoir.",
+    "Aether Revolt (2017) suit la révolution qui s'ensuit après que le Consulat, infiltré par le dragon planeswalker Tezzeret puis par Nicol Bolas, a basculé dans un régime autoritaire exploitant l'éther à outrance."
+  ],
+  regions: [
+    { name: 'Ghirapur', blurb: "Capitale flottante, siège du Consulat et des Grands Aether Games.", x: 50, y: 35, r: 12 },
+    { name: 'Districts industriels', blurb: "Ateliers et usines à éther en périphérie de la capitale.", x: 30, y: 55, r: 9 },
+    { name: 'Marché aux paras', blurb: "Zones commerçantes où s'échangent inventions et pièces détachées.", x: 68, y: 55, r: 8 },
+  ],
+  notable: ["Consulat de Kaladesh", "Dovin Baan (avant son ascension)", "Rashmi"],
+  planeswalkers: ["Chandra Nalaar (native, étincelle ravivée ici)"],
+  sets: [
+    { name: 'Kaladesh · Aether Revolt', year: '2016-17', code: 'kld' },
+  ],
+},
+
+// ------------------------------------------------------------------ AMONKHET
+{
+  id: 'amonkhet', name: 'Amonkhet', icon: '𓂀', era: 'moderne',
+  colors: ['W','U','B','R','G'],
+  tagline: "Plan d'inspiration égyptienne où chaque habitant se prépare toute sa vie à l'Épreuve des dieux — un piège tendu par Nicol Bolas.",
+  summary: [
+    "Amonkhet est une société entièrement organisée autour de la préparation à la mort : les habitants s'entraînent dès l'enfance pour affronter les Épreuves des cinq dieux-plans (en réalité des sphinx crées par Nicol Bolas se faisant passer pour des divinités), dans l'espoir de rejoindre une armée d'élite après la mort. C'est un immense piège : Bolas prépare depuis des siècles une armée de morts-vivants zombifiés (les éternels) à partir des meilleurs guerriers du plan.",
+    "Hour of Devastation (2017) révèle la supercherie au grand jour quand Bolas se dévoile et transforme le plan en base militaire zombifiée pour ses projets de conquête multiversale."
+  ],
+  regions: [
+    { name: 'La Cité Solaire (Naktamun)', blurb: "Capitale pyramidale où se déroulent les Épreuves.", x: 50, y: 40, r: 12 },
+    { name: 'Le Désert', blurb: "Étendues arides encerclant la cité, patrouillées par les éternels.", x: 30, y: 65, r: 12 },
+    { name: 'Les Nécropoles', blurb: "Tombeaux et catacombes où reposent les momifiés en attente.", x: 68, y: 60, r: 9 },
+  ],
+  notable: ["Nicol Bolas (déguisé en dieu-plan)", "Hazoret la Dévorante", "Samut"],
+  planeswalkers: ["Nicol Bolas (envahisseur)"],
+  sets: [
+    { name: 'Amonkhet · Hour of Devastation', year: '2017', code: 'akh' },
+  ],
+},
+
+// -------------------------------------------------------------------- IXALAN
+{
+  id: 'ixalan', name: 'Ixalan', icon: '🦖', era: 'moderne',
+  colors: ['W','U','B','R','G'],
+  tagline: "Continent perdu aux dinosaures, disputé par pirates, conquistadors et un empire vampirique caché.",
+  summary: [
+    "Ixalan est une terre d'exploration à l'ancienne : pirates du Brazenroute en quête de trésors, conquistadors de Torrezon assoiffés de conquête et d'or, marins-sirènes de la Guilde des Voile-Bleu protégeant des ruines englouties, et dinosaures partout. Sous la jungle se cache la véritable cible de toutes les convoitises : la Cité Perdue d'Orazca et son trésor légendaire, ainsi que l'Empire du Soleil vampirique dirigé par le vampire-légat Vona, allié secret de Nicol Bolas.",
+    "Lost Caverns of Ixalan (2023) explore les grottes sous le continent, où une civilisation dinosaure-humaine plus ancienne encore refait surface."
+  ],
+  regions: [
+    { name: 'Torrezon (conquistadors)', blurb: "Puissance coloniale humaine en quête de conquête.", x: 25, y: 25, r: 10 },
+    { name: 'Vodalia (sirènes)', blurb: "Cités englouties, gardiennes des ruines sous-marines.", x: 65, y: 20, r: 9 },
+    { name: 'La Jungle', blurb: "Cœur du continent, peuplée de dinosaures et de tribus de chasseurs.", x: 45, y: 55, r: 14 },
+    { name: 'Orazca', blurb: "Cité perdue au trésor légendaire, cachée dans la canopée.", x: 55, y: 60, r: 8 },
+    { name: 'Empire du Soleil', blurb: "Empire vampirique souterrain, allié secret de Nicol Bolas.", x: 35, y: 78, r: 10 },
+  ],
+  notable: ["Vona of the Empire of Song", "Huatli (poète devenue planeswalker)", "Admiral Beckett Brass"],
+  planeswalkers: ["Huatli", "Jace Beleren (de passage, amnésique)"],
+  sets: [
+    { name: 'Ixalan · Rivals of Ixalan', year: '2017-18', code: 'xln' },
+    { name: 'Lost Caverns of Ixalan', year: '2023', code: 'lci' },
+  ],
+},
+
+// ------------------------------------------------------------------- ELDRAINE
+{
+  id: 'eldraine', name: 'Eldraine', icon: '🏰', era: 'moderne',
+  colors: ['W','U','B','R','G'],
+  tagline: "Plan de contes de fées britanniques où chevalerie, magie féerique et morale ambiguë se mélangent.",
+  summary: [
+    "Eldraine transpose les contes de fées et légendes arthuriennes dans un plan cohérent : cinq royaumes reflètent chacun un pan de cet imaginaire — Ardenvale la chevaleresque, Locthwain le royaume des morts-vivants et des sorcières, Garenbrig la forêt féerique, Vantress la tour des mages-savants, Embereth le royaume martial des géants. La magie y fonctionne littéralement comme dans les contes : sorts liés à des vœux, malédictions à trois conditions, marchés fées à ne jamais accepter sans lire les petites lignes.",
+    "Wilds of Eldraine (2023) explore l'extérieur des royaumes, dans les forêts sauvages où les règles féeriques échappent à tout contrôle royal."
+  ],
+  regions: [
+    { name: 'Ardenvale', blurb: "Royaume chevaleresque et loyal, siège de la Reine Linden.", x: 45, y: 30, r: 9 },
+    { name: 'Locthwain', blurb: "Royaume nocturne des morts-vivants et sorcières.", x: 25, y: 55, r: 9 },
+    { name: 'Garenbrig', blurb: "Forêt féerique tentaculaire, capricieuse et dangereuse.", x: 65, y: 55, r: 10 },
+    { name: 'Vantress', blurb: "Tour-bibliothèque flottante des mages-érudits.", x: 65, y: 20, r: 8 },
+    { name: 'Embereth', blurb: "Royaume martial des géants et forgerons.", x: 30, y: 20, r: 8 },
+  ],
+  notable: ["Reine Linden", "Oko (fée-escroc)", "Le Grand Fauteur de Troubles"],
+  planeswalkers: ["Oko"],
+  sets: [
+    { name: 'Throne of Eldraine', year: '2019', code: 'eld' },
+    { name: 'Wilds of Eldraine', year: '2023', code: 'woe' },
+  ],
+},
+
+// ---------------------------------------------------------------- NEW CAPENNA
+{
+  id: 'capenna', name: 'New Capenna', icon: '🎩', era: 'moderne',
+  colors: ['W','U','B','R','G'],
+  tagline: "Métropole Art Déco des années 1920, dirigée en sous-main par cinq familles criminelles à trois couleurs chacune.",
+  summary: [
+    "New Capenna se présente comme un âge d'or éternel — jazz, gratte-ciels, prohibition — mais toute la ville appartient en réalité à cinq familles criminelles, chacune associée à un ange ou démon déchu qui la dirige depuis l'ombre : les Cabaretti (fêtards excessifs), les Maestros (assassins élégants), les Obscura (voleurs d'identité et de souvenirs), les Riveteers (saboteurs anarchistes), et les Brokers (financiers impitoyables).",
+    "Le plan a été créé de toutes pièces par l'ange déchu Raffine et ses pairs comme un piège doré pour des âmes humaines amenées d'autres plans — la ville entière est un business de captation d'âmes déguisé en paradis Art Déco."
+  ],
+  regions: [
+    { name: 'Quartier Obscura', blurb: "District du crime organisé et du vol d'identité.", x: 30, y: 30, r: 9 },
+    { name: 'Quartier Maestros', blurb: "Opéra et haute société, façade des assassins.", x: 65, y: 25, r: 8 },
+    { name: 'Quartier Riveteers', blurb: "Zones industrielles, sabotage et anarchie organisée.", x: 25, y: 65, r: 9 },
+    { name: 'Quartier Cabaretti', blurb: "Cabarets et excès en tout genre.", x: 65, y: 65, r: 9 },
+    { name: 'Quartier Brokers', blurb: "Gratte-ciels financiers, cœur du pouvoir économique.", x: 47, y: 45, r: 8 },
+  ],
+  notable: ["Raffine (ange déchu, fondateur)", "Giada", "Vorinclex (envahisseur phyrexian)"],
+  planeswalkers: [],
+  sets: [
+    { name: 'Streets of New Capenna', year: '2022', code: 'snc' },
+  ],
+},
+
+// -------------------------------------------------------------------- KALDHEIM
+{
+  id: 'kaldheim', name: 'Kaldheim', icon: '🪓', era: 'moderne',
+  colors: ['W','U','B','R','G'],
+  tagline: "Monde d'inspiration nordique, l'un des « Dix Mondes » reliés entre eux par l'arbre cosmique Yggdrasil.",
+  summary: [
+    "Kaldheim s'inspire directement de la mythologie nordique : géants, elfes, nains, dieux à demi-mortels et vikings s'y disputent gloire et survie. Particularité cosmologique du plan : il ne fait pas partie du Multivers classique séparé par les Éternités Bleues, mais forme avec neuf autres mondes un système fermé, relié en son centre par l'arbre-monde Yggdrasil — on peut y voyager sans étincelle de planeswalker, simplement en suivant les racines.",
+    "Kaya et Bolas croisent brièvement ce plan dans l'histoire du set (2021), qui met en scène deux dieux jumeaux, Toralf et Egon, ainsi que les Cinq Clans de Skemfar, Immerturm, Löfgren, Foretold et Cosima."
+  ],
+  regions: [
+    { name: 'Skemfar', blurb: "Forêt elfique où l'on communique avec les morts.", x: 30, y: 35, r: 9 },
+    { name: 'Immerturm', blurb: "Terres vampiriques et démoniaques, culte de Alrund/Toralf.", x: 65, y: 30, r: 9 },
+    { name: 'Axgard', blurb: "Territoire des géants et des vikings.", x: 45, y: 55, r: 10 },
+    { name: 'Gnottvold', blurb: "Terres géantes sauvages, chasse et démesure.", x: 60, y: 70, r: 9 },
+  ],
+  notable: ["Yggdrasil (l'arbre-monde)", "Toralf, God of Fury", "Egon, God of Death"],
+  planeswalkers: [],
+  sets: [
+    { name: 'Kaldheim', year: '2021', code: 'khm' },
+  ],
+},
+
+// ---------------------------------------------------------------- STRIXHAVEN
+{
+  id: 'strixhaven', name: 'Arcavios', aka: 'Strixhaven (le nom de l\'université)', icon: '📚', era: 'moderne',
+  colors: ['W','U','B','R','G'],
+  tagline: "Plan hôte de la prestigieuse université de magie Strixhaven, structurée en cinq collèges bicolores.",
+  summary: [
+    "Arcavios est surtout connu à travers Strixhaven, une université d'élite où l'on étudie la magie dans cinq collèges — Lorehold (histoire et archéo-magie), Prismari (art et élémentaire), Quandrix (mathématiques et géométrie magique), Silverquill (rhétorique et éloquence), Witherbloom (nature et alchimie noire). Sous le campus dort un dragon-planeswalker millénaire, Ravenform Golos... en réalité c'est Ω, l'ancien tyran magique du plan, scellé sous l'université depuis des siècles.",
+    "Strixhaven: School of Mages (2021) traite surtout de la vie étudiante et de rivalités inter-collèges plutôt que d'une menace multiversale — un ton plus léger que la moyenne des sets de cette époque."
+  ],
+  regions: [
+    { name: 'Lorehold', blurb: "Collège d'histoire et d'archéo-magie.", x: 30, y: 25, r: 8 },
+    { name: 'Prismari', blurb: "Collège d'art élémentaire spectaculaire.", x: 65, y: 25, r: 8 },
+    { name: 'Quandrix', blurb: "Collège de mathématiques et géométrie fractale.", x: 25, y: 60, r: 8 },
+    { name: 'Silverquill', blurb: "Collège de rhétorique, d'encre et de mots-sorts.", x: 65, y: 60, r: 8 },
+    { name: 'Witherbloom', blurb: "Collège de botanique et d'alchimie trouble.", x: 45, y: 42, r: 8 },
+  ],
+  notable: ["Les cinq Doyens de collège", "Ω (tyran scellé sous le campus)"],
+  planeswalkers: [],
+  sets: [
+    { name: 'Strixhaven: School of Mages', year: '2021', code: 'stx' },
+  ],
+},
+
+// -------------------------------------------------------------------- IKORIA
+{
+  id: 'ikoria', name: 'Ikoria', icon: '🦕', era: 'moderne',
+  colors: ['W','U','B','R','G'],
+  tagline: "Monde de mutation extrême où des créatures-titans gigantesques (behemoths) menacent en permanence les communautés survivantes.",
+  summary: [
+    "Ikoria est régulièrement traversé par des cataclysmes de mutation qui font naître des « behemoths » — des créatures géantes et instables, capables de raser une région en une saison. Les communautés humaines y survivent en s'alliant à des créatures plus stables via un lien de compagnonnage, une pratique centrale du set qui a inspiré le mécanisme de jeu « Compagnon ».",
+    "Le ton du set (2020) évoque explicitement le cinéma de kaiju japonais, avec des behemoths clairement designés comme hommages à des monstres de films de genre."
+  ],
+  regions: [
+    { name: 'Zagoth Triome', blurb: "Marais toxique, zone la plus instable du plan.", x: 30, y: 55, r: 10 },
+    { name: 'Savai Triome', blurb: "Volcans actifs, terrain d'affrontement des behemoths de feu.", x: 65, y: 30, r: 10 },
+    { name: 'Ketria Triome', blurb: "Forêts et rivières, zone la plus vivable.", x: 45, y: 25, r: 9 },
+  ],
+  notable: ["Lukka (dompteur de behemoths)", "Huatli (de passage)"],
+  planeswalkers: ["Lukka"],
+  sets: [
+    { name: 'Ikoria: Lair of Behemoths', year: '2020', code: 'iko' },
+  ],
+},
+
+// ----------------------------------------------------------------- BLOOMBURROW
+{
+  id: 'bloomburrow', name: 'Bloomburrow', icon: '🐿️', era: 'moderne',
+  colors: ['W','U','B','R','G'],
+  tagline: "Plan entièrement peuplé d'animaux anthropomorphes organisés en clans, sans aucun humain.",
+  summary: [
+    "Bloomburrow rompt avec la tradition humaine du jeu : c'est un plan où seules des espèces animales anthropomorphes (souris, lapins, écureuils, oiseaux, lézards, chauve-souris, grenouilles, crabes...) forment des sociétés organisées en Vallées, chacune dominée par une paire de couleurs et un tempérament propre. C'est un ton délibérément plus léger et familial que la moyenne des sets récents, pensé pour évoquer les fables animalières classiques.",
+    "Le set (2024) met en scène une menace commune — le Calamité, une force destructrice périodique — qui pousse les différents clans à coopérer malgré leurs rivalités."
+  ],
+  regions: [
+    { name: 'Vallée Verte (souris/lapins)', blurb: "Communautés paisibles, agriculture et solidarité.", x: 30, y: 35, r: 9 },
+    { name: 'Vallée de la Lande (chauve-souris/rats)', blurb: "Terres nocturnes et méfiantes.", x: 65, y: 30, r: 9 },
+    { name: 'Rivière (loutres/grenouilles)', blurb: "Cours d'eau, commerce et vivacité.", x: 45, y: 55, r: 9 },
+    { name: 'Falaises (oiseaux/lézards)', blurb: "Hauteurs rocheuses, territoire des rapaces.", x: 70, y: 60, r: 9 },
+  ],
+  notable: ["Les Familiers de clan", "Le Calamité (menace périodique)"],
+  planeswalkers: [],
+  sets: [
+    { name: 'Bloomburrow', year: '2024', code: 'blb' },
+  ],
+},
+
+// ----------------------------------------------------------------- DUSKMOURN
+{
+  id: 'duskmourn', name: 'Duskmourn', icon: '🏚️', era: 'moderne',
+  colors: ['W','U','B','R','G'],
+  tagline: "Un plan tout entier façonné comme une maison hantée démesurée, où l'horreur suit les codes du slasher.",
+  summary: [
+    "Duskmourn est une anomalie cosmologique : un plan entier qui a pris la forme d'une maison — couloirs sans fin, greniers labyrinthiques, caves qui n'en finissent pas — habité par des survivants traqués par des entités cauchemardesques calquées sur les tropes du cinéma d'horreur (le tueur masqué, la maison qui bouge, la créature du sous-sol). La maison elle-même semble avoir une volonté propre, hostile à quiconque cherche à s'échapper.",
+    "Duskmourn: House of Horror (2024) assume pleinement l'hommage au genre horrifique, contrastant avec le ton plus léger de Bloomburrow sorti la même année."
+  ],
+  regions: [
+    { name: 'Le Rez-de-chaussée', blurb: "Zone d'entrée, la moins hostile — relativement.", x: 45, y: 70, r: 10 },
+    { name: 'Les Couloirs sans fin', blurb: "Labyrinthe qui se reconfigure, où l'espace n'obéit à aucune règle.", x: 45, y: 45, r: 12 },
+    { name: 'Le Grenier', blurb: "Repaire des entités les plus anciennes de la maison.", x: 45, y: 15, r: 9 },
+    { name: 'La Cave', blurb: "Sous-sol tentaculaire, origine du Mal de la maison.", x: 45, y: 92, r: 9 },
+  ],
+  notable: ["La Maison (entité, pas un lieu)", "Les survivants du Rest Stop"],
+  planeswalkers: [],
+  sets: [
+    { name: 'Duskmourn: House of Horror', year: '2024', code: 'dsk' },
+  ],
+},
+
+// -------------------------------------------------------------- THUNDER JUNCTION
+{
+  id: 'thunderjunction', name: 'Thunder Junction', icon: '🤠', era: 'moderne',
+  colors: ['W','U','B','R','G'],
+  tagline: "Plan désertique d'inspiration western, théâtre d'un casse multiversal mené par Vraska et une bande de hors-la-loi planeswalkers.",
+  summary: [
+    "Thunder Junction transpose l'imaginaire du western spaghetti dans un plan désertique parsemé de canyons, de villes-frontière et de diligences. C'est le décor d'« Outlaws of Thunder Junction » (2024) : la planeswalker Vraska y assemble une bande de hors-la-loi (dont Oko et Kaya) pour dérober un artefact au shérif local — une intrigue de casse assumée plutôt qu'une menace existentielle pour le multivers.",
+    "Le plan lui-même reste peu détaillé au-delà de ce cadre narratif ponctuel ; c'est avant tout un décor au service de l'histoire du casse."
+  ],
+  regions: [
+    { name: 'Kelo City', blurb: "Ville-frontière tenue par le shérif Halana.", x: 45, y: 40, r: 10 },
+    { name: 'Le Désert Écarlate', blurb: "Étendues arides où opèrent les hors-la-loi.", x: 30, y: 65, r: 12 },
+    { name: 'Canyons profonds', blurb: "Repaires et pièges naturels des bandits.", x: 65, y: 60, r: 10 },
+  ],
+  notable: ["Sheriff Halana", "Oko (de retour)"],
+  planeswalkers: ["Vraska (meneuse du casse)"],
+  sets: [
+    { name: 'Outlaws of Thunder Junction', year: '2024', code: 'otj' },
+  ],
+},
+
+// ------------------------------------------------------------------ FIORA
+{
+  id: 'fiora', name: 'Fiora', icon: '👑', era: 'moderne',
+  colors: ['W','U','B','R','G'],
+  tagline: "Plan féodal aux dix grandes maisons nobles, théâtre des sets de draft Conspiracy.",
+  summary: [
+    "Fiora est un plan de politique de cour : dix grandes maisons nobles (Dimir-esques marchands d'ombres, chevaliers, marchands, universitaires...) se disputent l'influence sur un royaume fragmenté, avec un roi faible et manipulable comme enjeu central. C'est le décor des deux sets Conspiracy (2014, 2016), pensés spécifiquement pour le format de draft du même nom plutôt que pour raconter une grande saga multiversale.",
+    "Le lore y reste volontairement discret : Conspiracy est avant tout un produit de limited, et Fiora sert de toile de fond cohérente plus que de récit approfondi."
+  ],
+  regions: [
+    { name: 'La Cour Royale', blurb: "Centre du pouvoir, où se jouent complots et alliances.", x: 50, y: 40, r: 10 },
+    { name: 'Les Dix Maisons', blurb: "Territoires nobles rivaux répartis autour de la capitale.", x: 40, y: 65, r: 14 },
+  ],
+  notable: ["Les Dix Maisons de Fiora", "Le roi (jamais nommé précisément)"],
+  planeswalkers: [],
+  sets: [
+    { name: 'Conspiracy · Conspiracy: Take the Crown', year: '2014-16', code: 'cns' },
+  ],
+},
+
+// ---------------------------------------------------------------------- RATH
+{
+  id: 'rath', name: 'Rath', icon: '⚔️', era: 'ancien',
+  colors: ['B','R'],
+  tagline: "Plan-arme du seigneur phyrexian Volrath, littéralement superposé à une partie de Dominaria pendant des années.",
+  summary: [
+    "Rath n'est pas un plan « normal » : c'est un plan artificiel maintenu en superposition avec le continent de Dominaria par la magie phyrexiane, sous le contrôle du seigneur évincé Volrath. Il sert de base d'entraînement à une armée destinée à envahir Dominaria — l'un des nombreux plans d'invasion de Yawgmoth, le Père de tous les Machins Phyrexians.",
+    "Le cycle Tempest/Stronghold/Exodus (1997-98) suit la Saga Weatherlight sur ce plan, où le capitaine Gerrard Capashen affronte Volrath dans sa propre forteresse. Rath a été « désamorcé » — rendu à Dominaria — à la fin du cycle."
+  ],
+  regions: [],
+  notable: ["Volrath", "Crovax (transformé en vampire ici)"],
+  planeswalkers: [],
+  noSet: true,
+  sets: [
+    { name: 'Évoqué dans Tempest · Stronghold · Exodus', year: '1997-98', code: 'tmp' },
+  ],
+},
+
+// ----------------------------------------------------------------- PHYREXIA (ancienne)
+{
+  id: 'phyrexia-old', name: 'Phyrexia (originelle)', aka: 'avant la corruption de Mirrodin', icon: '🩸', era: 'ancien',
+  colors: ['B'],
+  tagline: "Le plan-usine où Yawgmoth a créé la doctrine phyrexiane originelle, avant même l'existence de New Phyrexia.",
+  summary: [
+    "La Phyrexia « historique » est le plan d'origine où le mage noir Yawgmoth, jadis mortel de Dominaria, s'est réfugié et a fondé la civilisation phyrexiane — biomécanique, hiérarchisée en castes, vouée à la « perfection compleate » qui fusionne chair et métal. C'est de là qu'est partie l'Invasion Phyrexiane de Dominaria (bloc Invasion, 2000), repoussée de justesse par une coalition multi-planaire.",
+    "Ce plan originel n'a jamais eu de set à son nom : on le connaît surtout par les textes de carte du bloc Invasion et par la Saga Weatherlight. New Phyrexia (l'ex-Mirrodin, 2011) est un plan différent, corrompu bien plus tard par des survivants de cette doctrine."
+  ],
+  regions: [],
+  notable: ["Yawgmoth", "Gix", "Belzenlok (émissaire)"],
+  planeswalkers: ["Yawgmoth (avant sa chute en divinité maléfique)"],
+  noSet: true,
+  sets: [
+    { name: 'Évoqué dans Invasion · Planeshift · Apocalypse', year: '2000-01', code: 'inv' },
+  ],
+},
+
+// ----------------------------------------------------------------------- MERCADIA
+{
+  id: 'mercadia', name: 'Mercadia', icon: '🐍', era: 'ancien',
+  colors: [],
+  tagline: "Cité-état commerçante où la Saga Weatherlight fait escale, gouvernée en sous-main par des créatures-serpents.",
+  summary: [
+    "Mercadia est un plan mercantile où presque tout se négocie, dominé en apparence par des marchands humains mais réellement contrôlé depuis les souterrains par les Cho-Arrim et surtout les Suq'Ata, des créatures reptiliennes. C'est une étape de la Saga Weatherlight : l'équipage y échange un artefact précieux (le Legacy) contre des ressources, avec des conséquences qui les rattraperont plus tard.",
+    "Le bloc Mercadian Masques (1999-2000) reste l'une des périodes les moins appréciées de la fiction Magic historique, ce qui explique pourquoi le plan n'a jamais été revisité depuis."
+  ],
+  regions: [],
+  notable: ["Rhammidarigaaz", "Les Suq'Ata"],
+  planeswalkers: [],
+  sets: [
+    { name: 'Mercadian Masques · Nemesis · Prophecy', year: '1999-2000', code: 'mmq' },
+  ],
+},
+
+// --------------------------------------------------------------------- ULGROTHA
+{
+  id: 'ulgrotha', name: 'Ulgrotha', icon: '🕯️', era: 'ancien',
+  colors: [],
+  tagline: "Plan sombre et féodal visité par le planeswalker Ravidel, décor du set Homelands.",
+  summary: [
+    "Ulgrotha est un plan gothique et morcelé, dirigé par des seigneurs locaux rivaux, que le planeswalker malfaisant Ravidel a saccagé pour son propre amusement avant d'y être vaincu. C'est l'un des plans les moins développés de l'histoire du jeu — Homelands (1995) est resté un set isolé, sans suite, et le lore associé n'a quasiment jamais été repris depuis."
+  ],
+  regions: [],
+  notable: ["Ravidel", "Baron Sengir"],
+  planeswalkers: ["Ravidel"],
+  sets: [
+    { name: 'Homelands', year: '1995', code: 'hml' },
+  ],
+},
+
+// -------------------------------------------------------------------- SARPADIA
+{
+  id: 'sarpadia', name: 'Sarpadia', icon: '🛡️', era: 'ancien',
+  colors: [],
+  tagline: "Plan ravagé par la disparition de ses figures légendaires, décor du set Fallen Empires.",
+  summary: [
+    "Sarpadia est le plan de Fallen Empires (1994), présenté comme un monde en déclin après la mort ou la disparition de ses grands héros et créatures légendaires — les factions restantes (elfes, thalakos, gobelins, homarides, icatians) se disputent les restes d'un âge d'or révolu. C'est l'un des tout premiers sets à raconter une histoire de decline plutôt que de conquête, mais le lore n'a presque jamais été détaillé au-delà des textes de carte de l'époque."
+  ],
+  regions: [],
+  notable: ["Les Icatians", "Les Thalakos"],
+  planeswalkers: [],
+  sets: [
+    { name: 'Fallen Empires', year: '1994', code: 'fem' },
+  ],
+},
+
+// -------------------------------------------------------------------- RABIAH
+{
+  id: 'rabiah', name: 'Rabiah', icon: '🏺', era: 'ancien',
+  colors: [],
+  tagline: "Plan associé de façon apocryphe au tout premier set d'extension, Arabian Nights.",
+  summary: [
+    "Rabiah n'a jamais été confirmé comme le plan officiel d'Arabian Nights (1993) dans la continuité canon actuelle — le nom vient d'une source secondaire ancienne (un almanach en jeu fictif) plutôt que d'un roman ou d'une carte. Le set lui-même s'inspire librement des Mille et Une Nuits (djinns, tapis volants, oasis) sans jamais fixer de géographie précise. À traiter comme une curiosité historique plus qu'une fiche de lore ferme."
+  ],
+  regions: [],
+  notable: [],
+  planeswalkers: [],
+  noSet: true,
+  sets: [
+    { name: 'Associé (de façon non confirmée) à Arabian Nights', year: '1993', code: 'arn' },
+  ],
+},
+
+// ---------------------------------------------------------------- SERRA'S REALM
+{
+  id: 'serra', name: 'Serra\'s Realm', icon: '👼', era: 'ancien',
+  colors: ['W'],
+  tagline: "Plan-utopie façonné par la planeswalker angélique Serra — détruit par une invasion phyrexiane pendant son absence.",
+  summary: [
+    "Le Royaume de Serra est un plan que la planeswalker angélique Serra a façonné à son image : cités flottantes, harmonie et ordre presque absolus, peuplé d'anges. Pendant que Serra explorait ailleurs le multivers, Phyrexia a profité de son absence pour envahir et détruire le plan — un événement raconté dans le roman « Time Streams » plutôt que dans un set dédié. Le plan n'a jamais eu d'extension à son nom."
+  ],
+  regions: [],
+  notable: ["Serra", "Les Anges de Serra"],
+  planeswalkers: ["Serra"],
+  noSet: true,
+  sets: [],
+},
+
+// -------------------------------------------------------------------- SHANDALAR
+{
+  id: 'shandalar', name: 'Shandalar', icon: '🎮', era: 'ancien',
+  colors: [],
+  tagline: "Plan surtout connu via le jeu vidéo Magic: The Gathering de 1997, plutôt qu'un set papier.",
+  summary: [
+    "Shandalar est principalement le décor du jeu vidéo « Magic: The Gathering » (1997), où le joueur y incarne un mage combattant cinq seigneurs rivaux pour empêcher l'arrivée d'un mal ancien. Le plan a été retouché avec parcimonie dans le jeu papier (une poignée de cartes portent son nom en clin d'œil, notamment dans Dominaria 2018), sans jamais recevoir de set dédié."
+  ],
+  regions: [],
+  notable: [],
+  planeswalkers: [],
+  noSet: true,
+  sets: [],
+},
+
+// -------------------------------------------------------------------- VRYN
+{
+  id: 'vryn', name: 'Vryn', icon: '📖', era: 'moderne',
+  colors: ['U'],
+  tagline: "Plan académique d'où est originaire le planeswalker Jace Beleren — jamais couvert par un set dédié.",
+  summary: [
+    "Vryn est présenté comme un plan érudit et bureaucratique, structuré autour d'Autarches (dirigeants-mages) et d'une administration très codifiée. C'est le monde natal de Jace Beleren, l'un des planeswalkers les plus emblématiques du jeu, dont l'étincelle s'ignite ici dans des circonstances traumatiques (rupture avec sa famille, pouvoirs télépathiques incontrôlés). Le plan lui-même reste esquissé à travers des nouvelles et bios de personnage plutôt qu'un set complet."
+  ],
+  regions: [],
+  notable: ["Les Autarches de Vryn"],
+  planeswalkers: ["Jace Beleren (natif)"],
+  noSet: true,
+  sets: [],
+},
+
+// -------------------------------------------------------------------- REGATHA
+{
+  id: 'regatha', name: 'Regatha', icon: '🔥', era: 'moderne',
+  colors: ['R'],
+  tagline: "Plan volcanique, présenté dans le lore historique comme le monde natal de Chandra Nalaar (avant un retcon vers Kaladesh).",
+  summary: [
+    "Regatha est un plan de moines pyromanciens et de volcans, où Chandra Nalaar aurait grandi selon les tout premiers textes de lore (autour de Magic Origins, 2015). Des révisions ultérieures de la continuité ont plutôt établi Kaladesh comme son plan natal réel, laissant Regatha comme un plan secondaire de son histoire (lieu où son étincelle s'est manifestée, plutôt que son foyer d'origine) — un exemple assez rare de flottement dans la continuité officielle."
+  ],
+  regions: [],
+  notable: ["L'Ordre des Moines de Keral"],
+  planeswalkers: ["Chandra Nalaar (étincelle ignitée ici)"],
+  noSet: true,
+  sets: [],
+},
+
+// -------------------------------------------------------------------- ERGAMON
+{
+  id: 'ergamon', name: 'Ergamon', icon: '👑', era: 'moderne',
+  colors: [],
+  tagline: "Second plan de cour féodale visité par le format Conspiracy, distinct de Fiora.",
+  summary: [
+    "Ergamon est le plan de Conspiracy: Take the Crown (2016), une cour royale différente de celle de Fiora mais construite sur les mêmes ressorts narratifs — complots de palais, maisons rivales, couronne convoitée. Comme pour Fiora, le lore reste volontairement en retrait au profit du format de draft que le set sert avant tout."
+  ],
+  regions: [],
+  notable: [],
+  planeswalkers: [],
+  sets: [
+    { name: 'Conspiracy: Take the Crown', year: '2016' },
+  ],
+},
+
+// -------------------------------------------------------------------- AETHERDRIFT
+{
+  id: 'aetherdrift', name: 'Aetherdrift', icon: '🏎️', era: 'moderne',
+  colors: ['W','U','B','R','G'],
+  tagline: "Une course multiversale à travers plusieurs plans, organisée autour des « omenpaths » — des sentiers reliant temporairement le multivers.",
+  summary: [
+    "Aetherdrift (2025) ne se déroule pas sur un seul plan : il met en scène une course effrénée à travers plusieurs mondes du multivers, reliés temporairement par des « omenpaths » instables. Ghirapur (le plan de Kaladesh) sert de point de départ emblématique. Le lore précis de cet événement est encore récent au moment de la rédaction de cette page — à prendre avec plus de prudence que les entrées plus anciennes."
+  ],
+  regions: [],
+  notable: [],
+  planeswalkers: [],
+  noSet: false,
+  sets: [
+    { name: 'Aetherdrift', year: '2025', code: 'dft' },
+  ],
+},
+
+];
+
+// ============================================================================
+// Rendu
+// ============================================================================
+const grid = document.getElementById('grid');
+const countEl = document.getElementById('count');
+const qInput = document.getElementById('q');
+let currentEra = '';
+
+document.getElementById('plane-total').textContent = PLANES.length;
+
+function foldText(s) {
+  return (s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+}
+
+function planeHaystack(p) {
+  return foldText([
+    p.name, p.aka, p.tagline, ...(p.summary || []),
+    ...(p.notable || []), ...(p.planeswalkers || []),
+    ...(p.sets || []).map(s => s.name),
+  ].join(' '));
+}
+
+function manaChip(letter) {
+  return `<span class="mana ${letter}">${letter}</span>`;
+}
+
+function cardHTML(p) {
+  const mana = (p.colors && p.colors.length ? p.colors : ['C']).map(manaChip).join('');
+  return `<div class="p-card" data-id="${p.id}">
+    <div class="icon">${p.icon}</div>
+    <h3>${p.name}</h3>
+    ${p.aka ? `<div class="aka">${p.aka}</div>` : ''}
+    <div class="tagline">${p.tagline}</div>
+    <div class="meta-row">
+      ${mana}
+      <span class="era-tag">${eraLabel(p.era)}</span>
+      ${p.noSet ? `<span class="no-set-tag">sans extension</span>` : ''}
+    </div>
+  </div>`;
+}
+
+function eraLabel(era) {
+  return { ancien: 'Lore ancien', bloc: 'Ère des blocs', moderne: 'Ère planeswalker' }[era] || era;
+}
+
+function renderMap(p) {
+  if (!p.regions || !p.regions.length) {
+    return `<div class="empty-map">Pas de carte pour ce plan — trop peu de géographie a été fixée dans le lore existant.</div>`;
+  }
+  const palette = ['#8b5cf6', '#0ea5e9', '#f97316', '#22c55e', '#ec4899', '#eab308'];
+  let inner = '';
+  p.regions.forEach((r, i) => {
+    const cx = r.x * 4, cy = r.y * 2.6, rad = r.r * 2.2;
+    const color = palette[i % palette.length];
+    inner += `<circle cx="${cx}" cy="${cy}" r="${rad}" fill="${color}" opacity="0.28" stroke="${color}" stroke-width="1.5"></circle>`;
+    inner += `<text x="${cx}" y="${cy}" text-anchor="middle" dominant-baseline="middle" font-size="9" font-weight="700" fill="currentColor">${escapeHtml(r.name)}</text>`;
+  });
+  return `<svg class="map-svg" viewBox="0 0 400 260" xmlns="http://www.w3.org/2000/svg">${inner}</svg>
+    <div class="map-note">Carte schématique simplifiée et non officielle — repère approximatif, pas une cartographie exacte.</div>`;
+}
+
+function escapeHtml(s) {
+  return String(s || '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
+function detailHTML(p) {
+  const mana = (p.colors && p.colors.length ? p.colors : ['C']).map(manaChip).join('');
+  const regionsHTML = (p.regions && p.regions.length)
+    ? `<div class="region-list">${p.regions.map(r => `<div><b>${escapeHtml(r.name)}</b><span>${escapeHtml(r.blurb)}</span></div>`).join('')}</div>`
+    : '';
+  const setsHTML = (p.sets && p.sets.length)
+    ? p.sets.map(s => `<div class="set-row"><span>${escapeHtml(s.name)}</span><span class="yr">${escapeHtml(s.year)}${s.code ? ` <a class="catalog-link" href="catalogue_cartes.html?q=s:${s.code}" target="_blank">voir les cartes →</a>` : ''}</span></div>`).join('')
+    : `<div class="set-row"><span style="color:var(--muted);">Aucune extension dédiée — ce plan n'est connu que par des mentions éparses.</span></div>`;
+  return `
+    <div class="detail-head">
+      <button class="close-x" id="detail-close">✕</button>
+      <div class="icon">${p.icon}</div>
+      <h2>${p.name}</h2>
+      ${p.aka ? `<div class="aka">${p.aka}</div>` : ''}
+      <div class="tags">${mana}<span class="era-tag">${eraLabel(p.era)}</span>${p.noSet ? `<span class="no-set-tag">sans extension</span>` : ''}</div>
+    </div>
+    <div class="detail-body">
+      <h4>Lore</h4>
+      ${p.summary.map(par => `<p>${par}</p>`).join('')}
+      ${p.regions && p.regions.length ? `<h4>Carte schématique</h4>${renderMap(p)}<h4>Régions</h4>${regionsHTML}` : `<h4>Carte</h4>${renderMap(p)}`}
+      ${p.notable && p.notable.length ? `<h4>Figures notables</h4><div class="chip-row">${p.notable.map(n => `<span class="chip">${escapeHtml(n)}</span>`).join('')}</div>` : ''}
+      ${p.planeswalkers && p.planeswalkers.length ? `<h4>Planeswalkers liés à ce plan</h4><div class="chip-row">${p.planeswalkers.map(n => `<span class="chip">${escapeHtml(n)}</span>`).join('')}</div>` : ''}
+      <h4>Extensions</h4>
+      ${setsHTML}
+    </div>`;
+}
+
+function applyFilter() {
+  const q = foldText(qInput.value.trim());
+  const list = PLANES.filter(p => (!currentEra || p.era === currentEra) && (!q || planeHaystack(p).includes(q)));
+  grid.innerHTML = list.length ? list.map(cardHTML).join('') : '';
+  countEl.textContent = list.length + ' plan(s) affiché(s) sur ' + PLANES.length;
+  if (!list.length) grid.innerHTML = `<div class="no-results" style="grid-column:1/-1;">Aucun plan ne correspond à « ${escapeHtml(qInput.value)} ».</div>`;
+}
+
+grid.addEventListener('click', (e) => {
+  const card = e.target.closest('.p-card');
+  if (!card) return;
+  const p = PLANES.find(x => x.id === card.dataset.id);
+  if (!p) return;
+  document.getElementById('detail-content').innerHTML = detailHTML(p);
+  document.getElementById('detail-overlay').classList.add('open');
+  document.getElementById('detail-close').onclick = () => document.getElementById('detail-overlay').classList.remove('open');
+});
+document.getElementById('detail-overlay').addEventListener('click', (e) => {
+  if (e.target.id === 'detail-overlay') e.currentTarget.classList.remove('open');
+});
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') document.getElementById('detail-overlay').classList.remove('open');
+});
+
+qInput.addEventListener('input', applyFilter);
+document.querySelectorAll('.era-chip').forEach(chip => {
+  chip.addEventListener('click', () => {
+    document.querySelectorAll('.era-chip').forEach(c => c.classList.remove('active'));
+    chip.classList.add('active');
+    currentEra = chip.dataset.era;
+    applyFilter();
+  });
+});
+
+applyFilter();
+</script>
+</body>
+</html>
